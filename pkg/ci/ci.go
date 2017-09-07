@@ -3,24 +3,8 @@ package ci
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
-)
-
-type Config struct {
-	Cluster    string
-	ActionList []map[string]string
-}
-
-type Actions struct {
-	Provision   string `yaml:"provision"`
-	Bind        string `yaml:"bind"`
-	Unbind      string `yaml:"unbind"`
-	Deprovision string `yaml:"deprovision"`
-	Verify      string `yaml:"verify"`
-}
-
-const (
-	ConfigFile = "config.yaml"
 )
 
 func CreateCi() (*Config, error) {
@@ -44,22 +28,50 @@ func (c *Config) Run() {
 			if action != "" || repo != "" {
 				fmt.Printf("ACTION: %s\n", action)
 				fmt.Printf("REPO: %s\n", repo)
+				err := c.callAction(action, repo)
+				if err != nil {
+					fmt.Println(err.Error())
+					os.Exit(1)
+				}
 			}
 		}
 	}
+}
+
+// Call the action the user wants
+func (c *Config) callAction(action string, repo string) error {
+	var err error
+	if action == "provision" {
+		err = c.Provision(repo)
+	} else if action == "bind" {
+		err = c.Bind(repo)
+	} else if action == "deprovision" {
+		err = c.Deprovision(repo)
+	} else if action == "unbind" {
+		err = c.Unbind(repo)
+	} else if action == "verify" {
+		err = c.Verify(repo)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Verify the cluster we're running on
 func (c *Config) setCluster(client string) error {
 	client = strings.ToLower(client)
 	if client == "openshift" {
+		c.Cluster = "oc"
 		fmt.Println("Using OpenShift Cluster")
 	} else if client == "kubernetes" {
+		c.Cluster = "kubectl"
 		fmt.Println("Using Kubernetes Cluster")
 	} else {
 		fmt.Println("Using unsupported Cluster: %v", client)
 		return errors.New("Unsupported Cluster")
 	}
-	c.Cluster = client
 	return nil
 }

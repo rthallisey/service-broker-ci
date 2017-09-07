@@ -23,7 +23,7 @@ func newConfig() (*Config, error) {
 		// create a new scanner and read the file line by line
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
-			a := &Actions{}
+			a := &YamlActions{}
 			actionMap := make(map[string]string)
 
 			if err = yaml.Unmarshal([]byte(scanner.Text()), a); err != nil {
@@ -42,7 +42,7 @@ func newConfig() (*Config, error) {
 	return config, nil
 }
 
-func getAction(a *Actions) (string, string) {
+func getAction(a *YamlActions) (string, string) {
 	if a == nil {
 		return "", ""
 	} else if a.Provision != "" {
