@@ -36,7 +36,8 @@ func (c *Config) Bind(repo string) error {
 	c.Provisioned = p
 
 	// Split the app name from the gitOrg
-	target := strings.Split(bindTarget, "/")[1]
+	t := strings.Split(bindTarget, "/")
+	target := t[len(t)-1]
 
 	// ansibleplaybookbundle/postgresql -> ansibleplaybookbundle/postgresql-mediawiki-bind
 	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
@@ -49,6 +50,10 @@ func (c *Config) Bind(repo string) error {
 }
 
 func (c *Config) Deprovision(repo string) error {
+	err := action.Deprovision(repo, c.Cluster)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

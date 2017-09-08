@@ -10,8 +10,9 @@ import (
 )
 
 func downloadTemplate(url string) (string, error) {
-	p := strings.Split(url, "/")
-	path := fmt.Sprintf("/tmp/%s", p[len(p)-1])
+	path := resourceName(url)
+	path = fmt.Sprintf("/tmp/%s", path)
+
 	out, err := os.Create(path)
 	if err != nil {
 		return "", err
@@ -30,6 +31,11 @@ func downloadTemplate(url string) (string, error) {
 	}
 
 	return path, nil
+}
+
+func resourceName(repo string) string {
+	path := strings.Split(repo, "/")
+	return path[len(path)-1]
 }
 
 func RunCommand(cmd string, args ...string) ([]byte, error) {

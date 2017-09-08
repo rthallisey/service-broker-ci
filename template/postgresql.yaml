@@ -2,7 +2,6 @@ apiVersion: servicecatalog.k8s.io/v1alpha1
 kind: ServiceInstance
 metadata:
   name: postgresql
-  namespace: default
 spec:
   serviceClassName: dh-ansibleplaybookbundle-rhscl-postgresql-apb-lates
   planName: prod
