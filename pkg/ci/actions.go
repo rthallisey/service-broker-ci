@@ -1,6 +1,7 @@
 package ci
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -21,10 +22,26 @@ func (c *Config) Provision(repo string) error {
 		return err
 	}
 
+	c.Provisioned = append(c.Provisioned, repo)
 	return nil
 }
 
 func (c *Config) Bind(repo string) error {
+	bindTarget, p, err := findBindTarget(repo, c.Provisioned)
+	if err != nil {
+		return err
+	}
+
+	// Save the updated list of Provisioned apps
+	c.Provisioned = p
+
+	// ansibleplaybookbundle/mediawiki -> ansibleplaybookbundle/mediawiki-postgresql-bind
+	//                                    <gitOrg>/<bindTarget>-<bindApp>-bind
+	repo = fmt.Sprintf("%s-%s-bind", repo, bindTarget)
+	err = action.Bind(getTemplateAddr(repo), c.Cluster, bindTarget)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -51,4 +68,51 @@ func getTemplateAddr(repo string) string {
 
 	// APB template will be in the template directory
 	return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, gitOrg, Branch, apb)
+}
+
+func findBindTarget(repo string, provisioned []string) (string, []string, error) {
+	var usedTargets []int
+	foundTarget := false
+	foundBind := false
+	var bindTarget string
+
+	// The config in imperative so order matters
+	for count, r := range provisioned {
+		// Remove the first Provisioned app that matches the Bind repo
+		// and the first Provisioned app that doesn't.
+
+		// The first Provisioned app that doesn't match Bind is the
+		// bindTarget.
+		if r != repo && !foundTarget {
+			bindTarget = r
+			foundTarget = true
+			usedTargets = append(usedTargets, count)
+		}
+
+		// The first Provisioned app that matches the Bind repo is the
+		// bind app.
+		if r == repo && !foundBind {
+			foundBind = true
+			usedTargets = append(usedTargets, count)
+		}
+
+		if foundBind && foundTarget {
+			cleanupUsedTargets(usedTargets, provisioned)
+			return bindTarget, provisioned, nil
+		}
+	}
+
+	return "", provisioned, errors.New("Failed to find a provisioned bind target and bind app")
+}
+
+func cleanupUsedTargets(usedTargets []int, provisioned []string) []string {
+	for _, d := range usedTargets {
+		// Cleanup the bindTarget and the bind app
+		if len(provisioned) == 1 {
+			provisioned = provisioned[:0]
+		} else {
+			provisioned = append(provisioned[:d], provisioned[d+1:]...)
+		}
+	}
+	return provisioned
 }

@@ -1,0 +1,14 @@
+apiVersion: servicecatalog.k8s.io/v1alpha1
+kind: ServiceInstanceCredential
+metadata:
+  name: binding
+  namespace: default
+spec:
+  instanceRef:
+    name: postgresql
+  secretName: binding
+  alphaPodPresetTemplate:
+    name: binding
+    selector:
+      matchLabels:
+        app: mediawiki123

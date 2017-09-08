@@ -3,6 +3,10 @@ package ci
 type Config struct {
 	Cluster    string
 	ActionList []map[string]string
+
+	// The bindTarget is the first available Provisioned APB that is not
+	// mentioned in Bind.
+	Provisioned []string
 }
 
 type YamlActions struct {
