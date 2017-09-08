@@ -58,6 +58,10 @@ func (c *Config) Deprovision(repo string) error {
 }
 
 func (c *Config) Unbind(repo string) error {
+	err := action.Unbind(repo, c.Cluster)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
