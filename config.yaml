@@ -1,16 +1,16 @@
-provision: ansibleplaybookbundle/mediawiki123-apb
-provision: ansibleplaybookbundle/postgresql-apb
+provision: ansibleplaybookbundle/mediawiki123
+provision: ansibleplaybookbundle/postgresql
 # Verify provision was successful
 
-bind: ansibleplaybookbundle/postgresql-apb
+bind: ansibleplaybookbundle/postgresql
 # Verify bind was successful
 
 verify: verify-app.sh
 # Run as a shell command
 
-unbind: ansibleplaybookbundle/postgresql-apb
+unbind: ansibleplaybookbundle/postgresql
 # Automatic verification occurs after the unbind
 
-deprovision: ansibleplaybookbundle/mediawiki123-apb
-deprovision: ansibleplaybookbundle/postgresql-apb
+deprovision: ansibleplaybookbundle/mediawiki123
+deprovision: ansibleplaybookbundle/postgresql
 # Automatic verification occurs after the deprovision
