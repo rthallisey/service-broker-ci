@@ -35,9 +35,12 @@ func (c *Config) Bind(repo string) error {
 	// Save the updated list of Provisioned apps
 	c.Provisioned = p
 
-	// ansibleplaybookbundle/mediawiki -> ansibleplaybookbundle/mediawiki-postgresql-bind
-	//                                    <gitOrg>/<bindTarget>-<bindApp>-bind
-	repo = fmt.Sprintf("%s-%s-bind", repo, bindTarget)
+	// Split the app name from the gitOrg
+	target := strings.Split(bindTarget, "/")[1]
+
+	// ansibleplaybookbundle/postgresql -> ansibleplaybookbundle/postgresql-mediawiki-bind
+	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
+	repo = fmt.Sprintf("%s-%s-bind", repo, target)
 	err = action.Bind(getTemplateAddr(repo), c.Cluster, bindTarget)
 	if err != nil {
 		return err
