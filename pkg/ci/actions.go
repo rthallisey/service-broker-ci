@@ -2,41 +2,25 @@ package ci
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
 	"strings"
+
+	"github.com/rthallisey/service-broker-ci/pkg/action"
 )
 
-func (c *Config) errorCheck() {
-
+type Broker interface {
+	Provision(string) error
+	Deprovision(string) error
+	Bind(string) error
+	Unbind(string) error
+	Verify(string) error
 }
 
 func (c *Config) Provision(repo string) error {
-	r := strings.Split(repo, "/")
-
-	// [ ansibleplaybookbundle, mediawiki123 ]
-	gitOrg, apb := r[0], r[1]
-
-	// For testing, set gitOrg to rthallisey
-	gitOrg = "rthallisey"
-
-	// APB template will be in the template directory
-	templateAddress := fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, gitOrg, Branch, apb)
-
-	template, err := downloadTemplate(templateAddress)
+	err := action.Provision(getTemplateAddr(repo), c.Cluster)
 	if err != nil {
 		return err
 	}
 
-	output, err := RunCommand(c.Cluster, "create", "-f", template)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(output))
-	// c.waitForResource()
-	// c.errorCheck()
 	return nil
 }
 
@@ -56,25 +40,15 @@ func (c *Config) Verify(repo string) error {
 	return nil
 }
 
-func downloadTemplate(url string) (string, error) {
-	p := strings.Split(url, "/")
-	path := fmt.Sprintf("/tmp/%s", p[len(p)-1])
-	out, err := os.Create(path)
-	if err != nil {
-		return "", err
-	}
-	defer out.Close()
+func getTemplateAddr(repo string) string {
+	r := strings.Split(repo, "/")
 
-	req, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer req.Body.Close()
+	// [ ansibleplaybookbundle, mediawiki123 ]
+	gitOrg, apb := r[0], r[1]
 
-	_, err = io.Copy(out, req.Body)
-	if err != nil {
-		return "", err
-	}
+	// For testing, set gitOrg to rthallisey/service-broker-ci
+	gitOrg = "rthallisey/service-broker-ci"
 
-	return path, nil
+	// APB template will be in the template directory
+	return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, gitOrg, Branch, apb)
 }
