@@ -64,10 +64,8 @@ func getTemplateAddr(repo string) string {
 	r := strings.Split(repo, "/")
 
 	// [ ansibleplaybookbundle, mediawiki123 ]
-	gitOrg, apb := r[0], r[1]
-
-	// For testing, set gitOrg to rthallisey/service-broker-ci
-	gitOrg = "rthallisey/service-broker-ci"
+	apb := r[len(r)-1]
+	gitOrg := strings.Join(r[0:len(r)-1], "/")
 
 	// APB template will be in the template directory
 	return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, gitOrg, Branch, apb)
