@@ -14,5 +14,7 @@ type YamlActions struct {
 }
 
 const (
+	BaseURL    = "https://raw.githubusercontent.com"
+	Branch     = "master"
 	ConfigFile = "config.yaml"
 )
