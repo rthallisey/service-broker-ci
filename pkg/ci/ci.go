@@ -41,6 +41,10 @@ func (c *Config) Run() {
 // Call the action the user wants
 func (c *Config) callAction(action string, repo string) error {
 	var err error
+	if repo == "" {
+		return errors.New(fmt.Sprintf("YAML Error: Empty string used with %s action", action))
+	}
+
 	if action == "provision" {
 		err = c.Provision(repo)
 	} else if action == "bind" {
@@ -51,6 +55,8 @@ func (c *Config) callAction(action string, repo string) error {
 		err = c.Unbind(repo)
 	} else if action == "verify" {
 		err = c.Verify(repo)
+	} else {
+		return errors.New(fmt.Sprintf("Action %s not found. Valid actions: [provision, bind, unbind, deprovision, verify]", action))
 	}
 
 	if err != nil {
