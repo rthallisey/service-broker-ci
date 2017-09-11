@@ -1,5 +1,8 @@
 provision: rthallisey/service-broker-ci/mediawiki123
+verify: openshift/ansible-service-broker/scripts/broker-ci/wait-for-resource.sh create mediawiki
+
 provision: rthallisey/service-broker-ci/postgresql
+
 # Verify provision was successful
 
 bind: rthallisey/service-broker-ci/postgresql

@@ -27,7 +27,6 @@ func (c *Config) Run() {
 		for action, repo := range v {
 			if action != "" || repo != "" {
 				fmt.Printf("ACTION: %s\n", action)
-				fmt.Printf("REPO: %s\n", repo)
 				err := c.callAction(action, repo)
 				if err != nil {
 					fmt.Println(err.Error())
@@ -41,6 +40,8 @@ func (c *Config) Run() {
 // Call the action the user wants
 func (c *Config) callAction(action string, repo string) error {
 	var err error
+
+	//TODO: Add error above. This will never get called because I check this case in Run()
 	if repo == "" {
 		return errors.New(fmt.Sprintf("YAML Error: Empty string used with %s action", action))
 	}

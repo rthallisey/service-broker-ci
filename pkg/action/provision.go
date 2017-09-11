@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func Provision(addr string, cmd string) error {
-	template, err := downloadTemplate(addr)
+func Provision(repo string, cmd string) error {
+	template, err := downloadTemplate(repo)
 	if err != nil {
 		return err
 	}
@@ -17,7 +17,5 @@ func Provision(addr string, cmd string) error {
 	}
 
 	fmt.Println(string(output))
-	// waitForResource()
-	// errorCheck()
 	return nil
 }

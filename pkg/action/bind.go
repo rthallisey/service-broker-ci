@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func Bind(addr string, cmd string, target string) error {
-	template, err := downloadTemplate(addr)
+func Bind(repo string, cmd string, target string) error {
+	template, err := downloadTemplate(repo)
 	if err != nil {
 		return err
 	}
