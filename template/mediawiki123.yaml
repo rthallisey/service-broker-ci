@@ -1,5 +1,6 @@
 apiVersion: servicecatalog.k8s.io/v1alpha1
-kind: ServiceInstance
+kind: Instances
+#kind: ServiceInstance
 metadata:
   name: mediawiki123
 spec:
