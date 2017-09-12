@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"strings"
 )
 
 func Provision(repo string, cmd string) error {
@@ -11,7 +12,8 @@ func Provision(repo string, cmd string) error {
 	}
 
 	fmt.Printf("Running: %s create -f %s\n", cmd, template)
-	output, err := RunCommand(cmd, "create", "-f", template)
+	args := fmt.Sprintf("create -f %s", template)
+	output, err := RunCommand(cmd, strings.Fields(args))
 	if err != nil {
 		return err
 	}

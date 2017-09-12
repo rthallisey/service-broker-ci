@@ -2,11 +2,13 @@ package action
 
 import (
 	"fmt"
+	"strings"
 )
 
 func Unbind(repo string, cmd string) error {
 	fmt.Printf("Running: %s delete ServiceInstanceCredential binding\n", cmd)
-	output, err := RunCommand(cmd, "delete", "ServiceInstanceCredential", "binding")
+	args := fmt.Sprintf("delete ServiceInstanceCredential binding")
+	output, err := RunCommand(cmd, strings.Fields(args))
 	if err != nil {
 		return err
 	}

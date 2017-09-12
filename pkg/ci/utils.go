@@ -57,7 +57,8 @@ func resolveGitRepo(repo string) string {
 		validRepo = strings.Join(gitURL, "/")
 
 		// Test if the repo is a valid git repo
-		_, err := action.RunCommand("git", "ls-remote", validRepo)
+		args := fmt.Sprintf("ls-remote %s", validRepo)
+		_, err := action.RunCommand("git", strings.Fields(args))
 		if err == nil {
 			// Return without 'https://github.com/'
 			validRepo = strings.Split(validRepo, "https://github.com/")[1]

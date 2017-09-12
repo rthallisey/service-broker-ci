@@ -38,7 +38,7 @@ func resourceName(repo string) string {
 	return path[len(path)-1]
 }
 
-func RunCommand(cmd string, args ...string) ([]byte, error) {
+func RunCommand(cmd string, args []string) ([]byte, error) {
 	output, err := exec.Command(cmd, args...).CombinedOutput()
 	return output, err
 }

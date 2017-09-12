@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"strings"
 )
 
 func Verify(repo string, args string) error {
@@ -10,7 +11,8 @@ func Verify(repo string, args string) error {
 		return err
 	}
 
-	output, err := RunCommand("bash", script, args)
+	fmt.Printf("Running: %s %s\n", script, args)
+	output, err := RunCommand(script, strings.Fields(args))
 	if err != nil {
 		return err
 	}
