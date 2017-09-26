@@ -3,9 +3,8 @@ package ci
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
-
-	"github.com/rthallisey/service-broker-ci/pkg/action"
 )
 
 func getTemplateAddr(repo string) string {
@@ -23,6 +22,7 @@ func getTemplateAddr(repo string) string {
 }
 
 func getScriptAddr(repoScriptAndArgs string) (string, string) {
+	var script, args string
 	// Check for a valid git repo, otherwise look locally
 	repo := resolveGitRepo(repoScriptAndArgs)
 
@@ -31,8 +31,16 @@ func getScriptAddr(repoScriptAndArgs string) (string, string) {
 	// addr="rthallisey/service-broker-ci/wait-for-resource.sh"
 	// args="create mediawiki"
 	//
-	script, args := getScriptAndArgs(repo, repoScriptAndArgs)
-	return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
+	if repo == "" {
+		items := strings.Split(repoScriptAndArgs, " ")
+		script = items[0]
+		args = strings.Join(items[1:len(items)], " ")
+		return script, args
+	} else {
+		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
+		return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
+	}
+
 }
 
 func resolveGitRepo(repo string) string {
@@ -40,34 +48,39 @@ func resolveGitRepo(repo string) string {
 
 	// Loop through each string in a git repo and combine them to test
 	// for a valid git repo. If there is no valid repo found, look locally
-	// for the file. The local file check hasn't been implemented yet.
+	// for the file.
 	//
-	// `git ls-remote https://github.com/rthallisey`                   - FAIL
-	// `git ls-remote https://github.com/rthallisey/service-broker-ci` - PASS
+	// `curl https://github.com/fake-git-user/fake-git-repo`  - FAIL
+	// `curl https://github.com/rthallisey/service-broker-ci` - PASS
 	//
 	addr := strings.Split(repo, "/")
-	for count, _ := range addr {
+	if len(addr) >= 2 {
+		// A git repo's address is always the first two items
+		//     rthallisey/service-broker-ci/...
+		baseRepo := addr[0:2]
 		gitURL := []string{"https://github.com"}
+		for count, _ := range addr {
+			// Combine 0...N items to form the url for testing
+			validRepo = strings.Join(addr[0:count], "/")
+			if validRepo == "" {
+				validRepo = strings.Join(baseRepo, "/")
+			}
 
-		// Combine 0...N items to form the url for testing
-		validRepo = strings.Join(addr[0:count], "/")
+			// Combine: 'https://github.com' + '/' + 'rthallisey/service-broker-ci'
+			gitURL = append(gitURL, validRepo)
+			validRepo = strings.Join(gitURL, "/")
 
-		// Combine: 'https://github.com' + '/' + 'rthallisey'
-		gitURL = append(gitURL, validRepo)
-		validRepo = strings.Join(gitURL, "/")
+			req, _ := http.Get(validRepo)
+			defer req.Body.Close()
 
-		// Test if the repo is a valid git repo
-		args := fmt.Sprintf("ls-remote %s", validRepo)
-		_, err := action.RunCommand("git", strings.Fields(args))
-		if err == nil {
-			// Return without 'https://github.com/'
-			validRepo = strings.Split(validRepo, "https://github.com/")[1]
-			fmt.Printf("REPO: %s\n", validRepo)
-			break
+			if req.StatusCode == http.StatusOK {
+				fmt.Println("FOund repo")
+				validRepo = strings.Split(validRepo, "https://github.com/")[1]
+				fmt.Printf("REPO: %s\n", validRepo)
+				break
+			}
 		}
 	}
-	//TODO: If there's no valid github repo found, look locally for the file
-
 	return validRepo
 }
 
