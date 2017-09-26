@@ -13,6 +13,9 @@ func downloadTemplate(url string) (string, error) {
 	path := resourceName(url)
 	path = fmt.Sprintf("/tmp/%s", path)
 
+	// Delete if it exists, so don't catch error
+	os.Remove(path)
+
 	out, err := os.Create(path)
 	if err != nil {
 		return "", err
