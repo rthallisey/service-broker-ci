@@ -41,6 +41,7 @@ func (c *Config) Bind(repo string) error {
 	// ansibleplaybookbundle/postgresql -> ansibleplaybookbundle/postgresql-mediawiki-bind
 	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
 	repo = fmt.Sprintf("%s-%s-bind", repo, target)
+
 	err = action.Bind(getTemplateAddr(repo), c.Cluster, bindTarget)
 	if err != nil {
 		return err
@@ -49,15 +50,17 @@ func (c *Config) Bind(repo string) error {
 }
 
 func (c *Config) Deprovision(repo string) error {
-	err := action.Deprovision(repo, c.Cluster)
+	err := action.Deprovision(getTemplateAddr(repo), c.Cluster)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Config) Unbind(repo string) error {
-	err := action.Unbind(repo, c.Cluster)
+func (c *Config) Unbind(bindInfo string) error {
+	trim := strings.Replace(bindInfo, " ", "", -1)
+	binding := strings.Split(trim, "|")
+	err := action.Unbind(binding, c.Cluster)
 	if err != nil {
 		return err
 	}

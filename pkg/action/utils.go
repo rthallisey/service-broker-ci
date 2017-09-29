@@ -10,6 +10,7 @@ import (
 )
 
 func downloadTemplate(url string) (string, error) {
+	fmt.Printf("URL: %s\n", url)
 	path := resourceName(url)
 	path = fmt.Sprintf("/tmp/%s", path)
 

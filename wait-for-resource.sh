@@ -5,7 +5,7 @@ RESOURCE=$2
 RESOURCE_NAME=$3
 CLUSTER=$4
 
-RETRIES=10
+RETRIES=100
 
 if [ "${CLUSTER}" == "kubernetes" ]; then
     cmd="kubectl"

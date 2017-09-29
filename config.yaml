@@ -1,20 +1,24 @@
 provision: rthallisey/service-broker-ci/mediawiki123
-verify: rthallisey/service-broker-ci/wait-for-resource.sh create pod mediawiki openshift
+verify: wait-for-resource.sh create pod mediawiki openshift
 
 provision: rthallisey/service-broker-ci/postgresql
-verify: rthallisey/service-broker-ci/wait-for-resource.sh create pod postgresql openshift
-
-# Verify provision was successful
+verify: wait-for-resource.sh create pod postgresql openshift
 
 bind: rthallisey/service-broker-ci/postgresql
-# Verify bind was successful
+verify: wait-for-resource.sh create bindings.v1alpha1.servicecatalog.k8s.io binding
 
-verify: verify-app.sh
-# Run as a shell command
+# The verify field is run as a shell command
+verify: verify-bind.sh mediawiki123
 
-unbind: rthallisey/service-broker-ci/postgresql
-# Automatic verification occurs after the unbind
+# The BindTarget gets binded to the BindApp.
+# Format:
+#      <BindTarget> | <BindApp>
+#
+unbind: postgresql | mediawiki123
+verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
 
 deprovision: rthallisey/service-broker-ci/mediawiki123
+verify: wait-for-resource.sh delete pod mediawiki openshift
+
 deprovision: rthallisey/service-broker-ci/postgresql
-# Automatic verification occurs after the deprovision
+verify: wait-for-resource.sh delete pod postgresql openshift

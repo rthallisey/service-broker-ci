@@ -5,9 +5,10 @@ import (
 	"strings"
 )
 
-func Unbind(repo string, cmd string) error {
-	fmt.Printf("Running: %s delete ServiceInstanceCredential binding\n", cmd)
-	args := fmt.Sprintf("delete ServiceInstanceCredential binding")
+func Unbind(binding []string, cmd string) error {
+	template := fmt.Sprintf("/tmp/%s-bind.yaml", strings.Join(binding, "-"))
+	fmt.Printf("Running: %s delete -f %s\n", cmd, template)
+	args := fmt.Sprintf("delete -f %s", template)
 	output, err := RunCommand(cmd, strings.Fields(args))
 	if err != nil {
 		return err
