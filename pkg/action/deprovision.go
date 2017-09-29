@@ -6,7 +6,14 @@ import (
 )
 
 func Deprovision(repo string, cmd string) error {
-	template := fmt.Sprintf("/tmp/%s", resourceName(repo))
+	var template string
+
+	if strings.Contains(repo, "https://raw.githubusercontent.com") {
+		template = fmt.Sprintf("/tmp/%s", resourceName(repo))
+	} else {
+		template = repo
+	}
+
 	fmt.Printf("Running: %s delete -f %s\n", cmd, template)
 	args := fmt.Sprintf("delete -f %s", template)
 	output, err := RunCommand(cmd, strings.Fields(args))
