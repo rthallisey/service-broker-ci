@@ -26,7 +26,5 @@ func Bind(repo string, cmd string, target string) error {
 	}
 
 	fmt.Println(string(output))
-	// waitForResource()
-	// errorCheck()
 	return nil
 }

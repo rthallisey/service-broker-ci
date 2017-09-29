@@ -27,7 +27,7 @@ func (c *Config) Provision(repo string) error {
 		return err
 	}
 
-	c.Provisioned = append(c.Provisioned, r)
+	c.Provisioned = append(c.Provisioned, repo)
 	return nil
 }
 

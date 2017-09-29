@@ -112,8 +112,8 @@ func findBindTarget(repo string, provisioned []string) (string, []string, error)
 		// Remove the first Provisioned app that matches the Bind repo
 		// and the first Provisioned app that doesn't.
 
-		// The first Provisioned app that doesn't match Bind is the
-		// bindTarget.
+		// The first Provisioned app that doesn't match the bindApp is
+		// the bindTarget.
 		if r != repo && !foundTarget {
 			bindTarget = r
 			foundTarget = true
