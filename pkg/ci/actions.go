@@ -1,6 +1,7 @@
 package ci
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -16,12 +17,17 @@ type Broker interface {
 }
 
 func (c *Config) Provision(repo string) error {
-	err := action.Provision(getTemplateAddr(repo), c.Cluster)
+	r, _ := getScriptAddr(repo, "template")
+	if r == "" {
+		return errors.New("Can't using an empty address for provision")
+	}
+
+	err := action.Provision(r, c.Cluster)
 	if err != nil {
 		return err
 	}
 
-	c.Provisioned = append(c.Provisioned, repo)
+	c.Provisioned = append(c.Provisioned, r)
 	return nil
 }
 
@@ -42,7 +48,12 @@ func (c *Config) Bind(repo string) error {
 	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
 	repo = fmt.Sprintf("%s-%s-bind", repo, target)
 
-	err = action.Bind(getTemplateAddr(repo), c.Cluster, bindTarget)
+	r, _ := getScriptAddr(repo, "template")
+	if r == "" {
+		return errors.New("Can't using an empty address for bind")
+	}
+
+	err = action.Bind(r, c.Cluster, bindTarget)
 	if err != nil {
 		return err
 	}
@@ -50,7 +61,12 @@ func (c *Config) Bind(repo string) error {
 }
 
 func (c *Config) Deprovision(repo string) error {
-	err := action.Deprovision(getTemplateAddr(repo), c.Cluster)
+	r, _ := getScriptAddr(repo, "template")
+	if r == "" {
+		return errors.New("Can't using an empty address for deprovision")
+	}
+
+	err := action.Deprovision(r, c.Cluster)
 	if err != nil {
 		return err
 	}
@@ -68,7 +84,11 @@ func (c *Config) Unbind(bindInfo string) error {
 }
 
 func (c *Config) Verify(repoAndArgs string) error {
-	repo, args := getScriptAddr(repoAndArgs)
+	repo, args := getScriptAddr(repoAndArgs, "script")
+	if repo == "" {
+		return errors.New("Can't using an empty address for verify")
+	}
+
 	err := action.Verify(repo, args)
 	if err != nil {
 		return err

@@ -6,9 +6,16 @@ import (
 )
 
 func Provision(repo string, cmd string) error {
-	template, err := downloadTemplate(repo)
-	if err != nil {
-		return err
+	var template string
+	var err error
+
+	if strings.Contains(repo, "https://raw.githubusercontent.com") {
+		template, err = downloadTemplate(repo)
+		if err != nil {
+			return err
+		}
+	} else {
+		template = repo
 	}
 
 	fmt.Printf("Running: %s create -f %s\n", cmd, template)

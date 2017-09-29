@@ -7,21 +7,8 @@ import (
 	"strings"
 )
 
-func getTemplateAddr(repo string) string {
-	fmt.Printf("REPO: %s\n", repo)
-
-	r := strings.Split(repo, "/")
-
-	// TODO: combine with actions.resourceName
-	// [ ansibleplaybookbundle, mediawiki123 ]
-	apb := r[len(r)-1]
-	gitOrg := strings.Join(r[0:len(r)-1], "/")
-
-	// APB template will be in the template directory
-	return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, gitOrg, Branch, apb)
-}
-
-func getScriptAddr(repoScriptAndArgs string) (string, string) {
+// TODO: Consider renaming to getRepoAddr
+func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
 	var script, args string
 	// Check for a valid git repo, otherwise look locally
 	repo := resolveGitRepo(repoScriptAndArgs)
@@ -34,13 +21,23 @@ func getScriptAddr(repoScriptAndArgs string) (string, string) {
 	if repo == "" {
 		items := strings.Split(repoScriptAndArgs, " ")
 		script = items[0]
-		args = strings.Join(items[1:len(items)], " ")
+		if len(items) > 1 {
+			args = strings.Join(items[1:len(items)], " ")
+		}
+		if dir == "template" {
+			return fmt.Sprintf("template/%s.yaml", script), args
+		}
 		return script, args
 	} else {
 		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
-		return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
+		if dir == "template" {
+			fmt.Println(script)
+			return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, repo, Branch, script), args
+		} else if dir == "script" {
+			return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
+		}
+		return "", ""
 	}
-
 }
 
 func resolveGitRepo(repo string) string {
@@ -74,7 +71,6 @@ func resolveGitRepo(repo string) string {
 			defer req.Body.Close()
 
 			if req.StatusCode == http.StatusOK {
-				fmt.Println("FOund repo")
 				validRepo = strings.Split(validRepo, "https://github.com/")[1]
 				fmt.Printf("REPO: %s\n", validRepo)
 				break
