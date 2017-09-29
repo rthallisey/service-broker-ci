@@ -3,20 +3,16 @@
 ACTION=$1
 RESOURCE=$2
 RESOURCE_NAME=$3
-CLUSTER=$4
 
+CMD="kubectl"
 RETRIES=100
 
-if [ "${CLUSTER}" == "kubernetes" ]; then
-    cmd="kubectl"
-else
-    cmd="oc"
-fi
+
 
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
-	pod=$($cmd get pods | grep ${RESOURCE_NAME} | awk $'{ print $3 }')
-	$cmd get pods -n default | grep ${RESOURCE_NAME}
+	pod=$($CMD get pods | grep ${RESOURCE_NAME} | awk $'{ print $3 }')
+	$CMD get pods -n default | grep ${RESOURCE_NAME}
 	if [ "${pod}" = 'Running' ]; then
 	    echo "${RESOURCE_NAME} ${RESOURCE} is running"
 	    break
@@ -26,7 +22,7 @@ if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     done
 elif [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
-	$cmd get ${RESOURCE} | grep ${RESOURCE_NAME}
+	$CMD get ${RESOURCE} | grep ${RESOURCE_NAME}
 	if [ $? -eq 0 ]; then
 	    echo "${RESOURCE_NAME} ${RESOURCE} has been created"
 	    break
@@ -36,7 +32,7 @@ elif [ "${ACTION}" = "create" ]; then
     done
 elif [ "${ACTION}" = "delete" ]; then
     for r in $(seq $RETRIES); do
-	$cmd get ${RESOURCE} | grep ${RESOURCE_NAME}
+	$CMD get ${RESOURCE} | grep ${RESOURCE_NAME}
 	if [ $? -eq 1 ]; then
 	    echo "${RESOURCE_NAME} ${RESOURCE} has been deleted"
 	    break
