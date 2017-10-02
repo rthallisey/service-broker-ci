@@ -5,7 +5,7 @@ RESOURCE=$2
 RESOURCE_NAME=$3
 
 CMD="kubectl"
-RETRIES=100
+RETRIES=60
 
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
@@ -16,7 +16,7 @@ if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
 	    break
 	fi
 	echo "Waiting for ${RESOURCE_NAME} ${RESOURCE} to be running"
-	sleep 1
+	sleep 3
     done
 elif [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
@@ -26,7 +26,7 @@ elif [ "${ACTION}" = "create" ]; then
 	    break
 	fi
 	echo "Waiting for ${RESOURCE_NAME} ${RESOURCE} to be created"
-	sleep 1
+	sleep 3
     done
 elif [ "${ACTION}" = "delete" ]; then
     for r in $(seq $RETRIES); do
@@ -36,11 +36,11 @@ elif [ "${ACTION}" = "delete" ]; then
 	    break
 	fi
 	echo "Waiting for ${RESOURCE_NAME} ${RESOURCE} to be deleted"
-	sleep 1
+	sleep 3
     done
 fi
 
-if [ r == $RETRIES ]; then
-    echo "Error: Timeout"
+if [ "${r}" == "${RETRIES}" ]; then
+    echo "Error: Timeout waiting for ${RESOURCE_NAME} ${RESOURCE} to be ${ACTION}d"
     exit 1
 fi
