@@ -9,19 +9,19 @@ GO package that provides a CI framework for testing Service Catalog Instances
 
 
 #### API Keys
-provision
-bind
-unbind
-deprovision
-verify
+- provision
+- bind
+- unbind
+- deprovision
+- verify
 
 
-#### File
+##### File
 The file field accepts a valid git repo ```rthallisey/service-broker-ci/postgresql```
 of the apb or a local file ```postgresql```.
 
 
-#### Verify
+##### Verify
 Verify is used to check if an action is successful.  Verify accepts a script
 from git repo ```rthallisey/service-broker-ci/wait-for-resource.sh``` or a local
 script ```wait-for-resource.sh```.
@@ -30,12 +30,13 @@ script ```wait-for-resource.sh```.
 ### Directory Structure
 Templates are expected to be in the template directory. Everything else uses the
 full path provided.
+```
 .
 |── template
 │   ├── mediawiki123.yaml
 │   ├── postgresql-mediawiki123-bind.yaml
 │   └── postgresql.yaml
-
+```
 
 ### Bind Ordering
 There are two applications that are used in a bind, the **bindApp** and the
