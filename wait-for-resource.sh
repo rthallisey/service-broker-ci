@@ -7,8 +7,6 @@ RESOURCE_NAME=$3
 CMD="kubectl"
 RETRIES=100
 
-
-
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
 	pod=$($CMD get pods | grep ${RESOURCE_NAME} | awk $'{ print $3 }')
@@ -40,4 +38,9 @@ elif [ "${ACTION}" = "delete" ]; then
 	echo "Waiting for ${RESOURCE_NAME} ${RESOURCE} to be deleted"
 	sleep 1
     done
+fi
+
+if [ r == $RETRIES ]; then
+    echo "Error: Timeout"
+    exit 1
 fi
