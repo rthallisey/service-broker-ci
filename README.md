@@ -8,7 +8,7 @@ GO package that provides a CI framework for testing Service Catalog Instances
 ```
 
 
-#### API Keys
+###### API Keys
 - provision
 - bind
 - unbind
@@ -30,7 +30,7 @@ script ```wait-for-resource.sh```.
 ### Directory Structure
 Templates are expected to be in the template directory. Everything else uses the
 full path provided.
-```
+```bash
 .
 |── template
 │   ├── mediawiki123.yaml
