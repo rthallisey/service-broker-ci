@@ -17,10 +17,10 @@ func Deprovision(repo string, cmd string) error {
 	fmt.Printf("Running: %s delete -f %s\n", cmd, template)
 	args := fmt.Sprintf("delete -f %s", template)
 	output, err := RunCommand(cmd, strings.Fields(args))
+
+	fmt.Println(string(output))
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(output))
 	return nil
 }

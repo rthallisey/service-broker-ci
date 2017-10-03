@@ -24,12 +24,16 @@ func Verify(repo string, args string) error {
 	if err != nil {
 		if strings.Contains(err.Error(), "executable file not found in $PATH") {
 			output, err = RunCommand(script, strings.Fields(args))
+			fmt.Println(string(output))
+			if err != nil {
+				return err
+			}
 		} else {
+			fmt.Println(string(output))
 			return err
 		}
+	} else {
+		fmt.Println(string(output))
 	}
-
-	fmt.Println(string(output))
-
 	return nil
 }

@@ -21,10 +21,10 @@ func Bind(repo string, cmd string, target string) error {
 	fmt.Printf("Running: %s create -f %s\n", cmd, template)
 	args := fmt.Sprintf("create -f %s", template)
 	output, err := RunCommand(cmd, strings.Fields(args))
+
+	fmt.Println(string(output))
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(output))
 	return nil
 }
