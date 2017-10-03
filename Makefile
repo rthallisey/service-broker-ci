@@ -1,13 +1,13 @@
 vendor:
 	@glide install -v
 
-build:
-	@go build -i -ldflags="-s -w" ./cmd/ci
+install:
+	@go install ./cmd/ci
 
-run: build
-	@./ci
+run: install
+	@ci
 
-run-k: build
-	@./ci --cluster kubernetes
+run-k: install
+	@ci --cluster kubernetes
 
 .PHONY: run run-k build vendor
