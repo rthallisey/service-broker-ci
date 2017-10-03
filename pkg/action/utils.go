@@ -9,6 +9,29 @@ import (
 	"strings"
 )
 
+func getTemplate(repo string) (string, error) {
+	var template string
+	var err error
+
+	if strings.Contains(repo, "https://raw.githubusercontent.com") {
+		template, err = downloadTemplate(repo)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		args := fmt.Sprintf("%s /tmp/%s", repo, repo)
+		output, err := RunCommand("cp", strings.Fields(args))
+
+		fmt.Println(string(output))
+		if err != nil {
+			return "", err
+		}
+		template = fmt.Sprintf("/tmp/%s", repo)
+	}
+
+	return template, nil
+}
+
 func downloadTemplate(url string) (string, error) {
 	fmt.Printf("URL: %s\n", url)
 	path := resourceName(url)

@@ -6,16 +6,9 @@ import (
 )
 
 func Verify(repo string, args string) error {
-	var script string
-	var err error
-
-	if strings.Contains(repo, "https://raw.githubusercontent.com") {
-		script, err = downloadTemplate(repo)
-		if err != nil {
-			return err
-		}
-	} else {
-		script = repo
+	script, err := getTemplate(repo)
+	if err != nil {
+		return err
 	}
 
 	fmt.Printf("Running: %s %s\n", script, args)

@@ -31,7 +31,6 @@ func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
 	} else {
 		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
 		if dir == "template" {
-			fmt.Println(script)
 			return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, repo, Branch, script), args
 		} else if dir == "script" {
 			return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
