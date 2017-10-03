@@ -30,8 +30,11 @@ func newConfig() (*Config, error) {
 				fmt.Println(err)
 			}
 			action, repo = getAction(a)
-			actionMap[action] = repo
-			config.ActionList = append(config.ActionList, actionMap)
+			if action != "" || repo != "" {
+				actionMap[action] = repo
+				config.ActionList = append(config.ActionList, actionMap)
+			}
+
 		}
 		if err = scanner.Err(); err != nil {
 			return nil, err
