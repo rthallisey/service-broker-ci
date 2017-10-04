@@ -6,7 +6,8 @@ sudo: required
 group: edge
 
 before_script:
-  - go get github.com/rthallisey/service-broker-ci/tree/master/cmd/ci
+  - sudo apt-get install -y origin-clients
+#  - go get github.com/rthallisey/service-broker-ci/tree/master/cmd/ci
 script:
   - bash <(curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/run_latest_build.sh)
   - ci
