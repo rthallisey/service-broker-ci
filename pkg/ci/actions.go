@@ -28,6 +28,12 @@ func (c *Config) Provision(repo string) error {
 	}
 
 	c.Provisioned = append(c.Provisioned, repo)
+
+	fmt.Printf("Waiting for %s apb to be ready", action.ResourceName(repo))
+	err = c.Verify(fmt.Sprintf("wait-for-resource.sh create pod %s", action.ResourceName(repo)))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -57,6 +63,18 @@ func (c *Config) Bind(repo string) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("Waiting for %s to bind to %s", repo, bindTarget)
+	err = c.Verify("wait-for-resource.sh create bindings.v1alpha1.servicecatalog.k8s.io binding")
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Waiting for podpreset to be created")
+	err = c.Verify("wait-for-resource.sh create podpreset binding")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -70,6 +88,13 @@ func (c *Config) Deprovision(repo string) error {
 	if err != nil {
 		return err
 	}
+
+	// TODO: binding name needs to be a param
+	fmt.Printf("Waiting for %s to be deleted", action.ResourceName(repo))
+	err = c.Verify(fmt.Sprintf("wait-for-resource.sh delete pod %s", action.ResourceName(repo)))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -77,6 +102,12 @@ func (c *Config) Unbind(bindInfo string) error {
 	trim := strings.Replace(bindInfo, " ", "", -1)
 	binding := strings.Split(trim, "|")
 	err := action.Unbind(binding, c.Cluster)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Waiting for unbind occur")
+	err = c.Verify("wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding")
 	if err != nil {
 		return err
 	}

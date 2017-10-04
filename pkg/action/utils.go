@@ -34,7 +34,7 @@ func getTemplate(repo string) (string, error) {
 
 func downloadTemplate(url string) (string, error) {
 	fmt.Printf("URL: %s\n", url)
-	path := resourceName(url)
+	path := ResourceName(url)
 	path = fmt.Sprintf("/tmp/%s", path)
 
 	// Delete if it exists, so don't catch error
@@ -60,7 +60,7 @@ func downloadTemplate(url string) (string, error) {
 	return path, nil
 }
 
-func resourceName(repo string) string {
+func ResourceName(repo string) string {
 	path := strings.Split(repo, "/")
 	return path[len(path)-1]
 }

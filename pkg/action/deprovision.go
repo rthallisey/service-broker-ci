@@ -6,7 +6,7 @@ import (
 )
 
 func Deprovision(repo string, cmd string) error {
-	template := fmt.Sprintf("/tmp/%s", resourceName(repo))
+	template := fmt.Sprintf("/tmp/%s", ResourceName(repo))
 	fmt.Printf("Running: %s delete -f %s\n", cmd, template)
 	args := fmt.Sprintf("delete -f %s", template)
 	output, err := RunCommand(cmd, strings.Fields(args))
