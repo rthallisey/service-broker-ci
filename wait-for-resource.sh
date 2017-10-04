@@ -9,7 +9,7 @@ RETRIES=60
 
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
-	pod=$($CMD get pods | grep ${RESOURCE_NAME} | awk $'{ print $3 }')
+	pod=$($CMD get pods | grep ${RESOURCE_NAME} | grep -v deploy | awk $'{ print $3 }')
 	$CMD get pods -n default | grep ${RESOURCE_NAME}
 	if [ "${pod}" = 'Running' ]; then
 	    echo "${RESOURCE_NAME} ${RESOURCE} is running"
