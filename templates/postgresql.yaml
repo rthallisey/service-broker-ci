@@ -4,7 +4,7 @@ kind: Instance
 metadata:
   name: postgresql
 spec:
-  serviceClassName: dh-ansibleplaybookbundle-rhscl-postgresql-apb-lates
+  serviceClassName: dh-rhscl-postgresql-apb
   planName: prod
   parameters:
     postgresql_database: "admin"

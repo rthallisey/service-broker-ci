@@ -25,13 +25,13 @@ func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
 			args = strings.Join(items[1:len(items)], " ")
 		}
 		if dir == "template" {
-			return fmt.Sprintf("template/%s.yaml", script), args
+			return fmt.Sprintf("templates/%s.yaml", script), args
 		}
 		return script, args
 	} else {
 		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
 		if dir == "template" {
-			return fmt.Sprintf("%s/%s/%s/template/%s.yaml", BaseURL, repo, Branch, script), args
+			return fmt.Sprintf("%s/%s/%s/templates/%s.yaml", BaseURL, repo, Branch, script), args
 		} else if dir == "script" {
 			return fmt.Sprintf("%s/%s/%s/%s", BaseURL, repo, Branch, script), args
 		}

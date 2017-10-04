@@ -4,7 +4,7 @@ kind: Instance
 metadata:
   name: mediawiki123
 spec:
-  serviceClassName: dh-ansibleplaybookbundle-mediawiki123-apb-latest
+  serviceClassName: dh-mediawiki123-apb
   planName: default
   parameters:
     mediawiki_db_schema: "mediawiki"

@@ -36,10 +36,10 @@ verify: oc get pods
 
 ### Config file format
 Templates used by provision, bind, unbind, and deprovision are expected to be in
-the template directory. Everything else uses the full path provided.
+the ```templates``` directory. Everything else uses the full path provided.
 ```bash
 .
-|── template
+|── templates
 │   ├── mediawiki123.yaml
 │   ├── postgresql-mediawiki123-bind.yaml
 │   └── postgresql.yaml
