@@ -4,6 +4,8 @@ verify: wait-for-resource.sh create pod mediawiki
 provision: rthallisey/service-broker-ci/postgresql
 verify: wait-for-resource.sh create pod postgresql
 
+# Specify the path of the BindApp. This will bind to the first provisioned app
+# that is not the same as the BindApp.
 bind: rthallisey/service-broker-ci/postgresql
 verify: wait-for-resource.sh create bindings.v1alpha1.servicecatalog.k8s.io binding
 verify: wait-for-resource.sh create podpreset binding
