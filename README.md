@@ -1,5 +1,5 @@
 # service-broker-ci
-GO package that provides a CI framework for testing Service Catalog Instances
+GO package that provides a CI framework for testing Service Catalog Instances.
 
 ### Syntax
 
@@ -18,7 +18,8 @@ GO package that provides a CI framework for testing Service Catalog Instances
 
 ##### File
 The file field accepts a valid git repo ```rthallisey/service-broker-ci/postgresql```
-of the apb or a local file ```postgresql```.
+of the apb or a local file. The API Keys provision, bind, unbind, and
+deprovision will add a .yaml extention to the path.
 
 
 ##### Verify
@@ -26,10 +27,16 @@ Verify is used to check if an action is successful.  Verify accepts a script
 from git repo ```rthallisey/service-broker-ci/wait-for-resource.sh``` or a local
 script ```wait-for-resource.sh```.
 
+The Verify API Key is also a shell. It can run any shell command and return the
+output.
+```yaml
+verify: oc get pods
+```
 
-### Directory Structure
-Templates are expected to be in the template directory. Everything else uses the
-full path provided.
+
+### Config file format
+Templates used by provision, bind, unbind, and deprovision are expected to be in
+the template directory. Everything else uses the full path provided.
 ```bash
 .
 |── template
@@ -37,6 +44,33 @@ full path provided.
 │   ├── postgresql-mediawiki123-bind.yaml
 │   └── postgresql.yaml
 ```
+
+
+##### Using Local Paths
+The config file accepts local paths to scripts and templates.
+
+Every template will be searched for in the ```templates``` directory locally
+while other scripts will use the top level directory.
+```yaml
+provision: mediawiki123
+verify: wait-for-resource.sh create pod mediawiki
+```
+
+
+##### Matching Paths
+When describing a path to a template, that path will be the key used to identify
+which app is being acted upon.
+
+For example, to provision and deprovision the same postgresql app, use matching
+paths.
+```yaml
+provision: postgresql
+verify: wait-for-resource.sh create pod postgresql
+
+deprovision: postgresql
+verify: wait-for-resource.sh delete pod postgresql
+```
+
 
 ### Bind Ordering
 There are two applications that are used in a bind, the **bindApp** and the
@@ -70,31 +104,4 @@ provision: rthallisey/service-broker-ci/mariadb
 
 bind: rthallisey/service-broker-ci/postgresql
 bind: rthallisey/service-broker-ci/mariadb
-```
-
-
-### Local Paths
-
-The config file accepts local paths to scripts and templates.
-
-Any template will be search for in the templates directory locally
-and other scripts will use the top level directory.
-```yaml
-provision: mediawiki123
-verify: wait-for-resource.sh create pod mediawiki
-```
-
-
-### Matching Paths
-
-When describing a path to a template, that path will the key used to identify
-which app is being acted upon.
-
-To provision and deprovision the same postgresql app, use matching paths.
-```yaml
-provision: postgresql
-verify: wait-for-resource.sh create pod postgresql
-
-deprovision: postgresql
-verify: wait-for-resource.sh delete pod postgresql
 ```
