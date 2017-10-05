@@ -6,7 +6,8 @@ sudo: required
 group: edge
 
 before_script:
-  - sudo apt-get install -y origin-clients
+  - sudo wget -O /bin/oc https://s3.amazonaws.com/catasb/linux/amd64/oc
+  - sudo chmod +x /bin/oc
 #  - go get github.com/rthallisey/service-broker-ci/tree/master/cmd/ci
 script:
   - bash <(curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/run_latest_build.sh)
