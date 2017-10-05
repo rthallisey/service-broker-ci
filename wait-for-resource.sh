@@ -5,7 +5,7 @@ RESOURCE=$2
 RESOURCE_NAME=$3
 
 CMD="kubectl"
-RETRIES=60
+RETRIES=600
 
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
