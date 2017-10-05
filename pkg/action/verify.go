@@ -11,12 +11,15 @@ func Verify(repo string, args string) error {
 		return err
 	}
 
-	fmt.Printf("Running: %s %s\n", script, args)
+	fmt.Printf("Running: %s %s\n", repo, args)
 	combinedArgs := fmt.Sprintf("%s %s", script, args)
 	output, err := RunCommand("bash", strings.Fields(combinedArgs))
 	if err != nil {
-		if strings.Contains(err.Error(), "executable file not found in $PATH") {
-			output, err = RunCommand(script, strings.Fields(args))
+		if strings.Contains(string(output), "executable file not found in $PATH") ||
+			strings.Contains(string(output), "No such file or directory") {
+			output, err = RunCommand(repo, strings.Fields(args))
+			fmt.Println(string(output))
+			fmt.Println(string(output))
 			fmt.Println(string(output))
 			if err != nil {
 				return err

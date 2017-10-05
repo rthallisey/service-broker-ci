@@ -21,11 +21,14 @@ func getTemplate(repo string) (string, error) {
 	} else {
 		args := fmt.Sprintf("%s /tmp/%s", repo, repo)
 		output, err := RunCommand("cp", strings.Fields(args))
-
-		fmt.Println(string(output))
 		if err != nil {
-			return "", err
+			// If the file doesn't exist, error later
+			if !strings.Contains(string(output), "No such file or directory") {
+				fmt.Println(string(output))
+				return "", err
+			}
 		}
+
 		template = fmt.Sprintf("/tmp/%s", repo)
 	}
 
