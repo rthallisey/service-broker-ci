@@ -8,7 +8,9 @@ group: edge
 services:
   - docker
 before_script:
-  - ./setup-gate.sh
+  - travis_wait 30 ./setup-gate.sh
+  - sudo docker ps -a
+  - sudo docker logs origin
   - make vendor
   - make install
 #  - bash <(curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/setup-gate.sh)
