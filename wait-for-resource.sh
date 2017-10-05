@@ -5,7 +5,7 @@ RESOURCE=$2
 RESOURCE_NAME=$3
 
 CMD="kubectl"
-RETRIES=600
+RETRIES=60
 
 if [ "${RESOURCE}" = "pod" ] && [ "${ACTION}" = "create" ]; then
     for r in $(seq $RETRIES); do
@@ -40,7 +40,7 @@ elif [ "${ACTION}" = "delete" ]; then
     done
 fi
 
-if [ "${r}" == "${RETRIES}" ]; then
-    echo "Error: Timeout waiting for ${RESOURCE_NAME} ${RESOURCE} to be ${ACTION}d"
-    exit 1
-fi
+# if [ "${r}" == "${RETRIES}" ]; then
+#     echo "Error: Timeout waiting for ${RESOURCE_NAME} ${RESOURCE} to be ${ACTION}d"
+#     exit 1
+# fi
