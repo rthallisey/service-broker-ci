@@ -19,8 +19,6 @@ verify: verify-bind.sh mediawiki123
 #
 unbind: postgresql | mediawiki123
 verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
-verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
-verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
 
 deprovision: rthallisey/service-broker-ci/mediawiki123
 verify: wait-for-resource.sh delete pod mediawiki
