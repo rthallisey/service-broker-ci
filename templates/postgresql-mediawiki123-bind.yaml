@@ -1,5 +1,6 @@
 apiVersion: servicecatalog.k8s.io/v1alpha1
-kind: ServiceInstanceCredential
+kind: bindings.servicecatalog.k8s.io
+#kind: ServiceInstanceCredential
 metadata:
   name: binding
 spec:
