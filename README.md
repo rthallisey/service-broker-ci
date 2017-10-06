@@ -7,7 +7,7 @@ Instances.
 To setup a gate with Travis you need the file ```.travis.yaml``` checked into
 your repo.
 ```bash
-curl -O .travis.yml https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.yml
+curl -o .travis.yml https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.yml
 ```
 
 
