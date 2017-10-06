@@ -5,7 +5,7 @@ TEMPLATE_DIR="/tmp"
 bindApp=$1
 
 echo "Letting the service-catalog create the bind"
-sleep 30
+sleep 60
 
 RETRIES=10
 for x in $(seq $RETRIES); do
