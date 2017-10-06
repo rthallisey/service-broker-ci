@@ -5,11 +5,11 @@ TEMPLATE_DIR="/tmp"
 bindApp=$1
 
 echo "Letting the service-catalog create the bind"
-sleep 30
+sleep 60
 
 RETRIES=10
 for x in $(seq $RETRIES); do
-    oc delete pods $(oc get pods -o name -l app="${bindApp}" | head -1 | cut -f 2 -d '/') --force --grace-period=10
+    oc delete pods $(oc get pods -o name -l app="${bindApp}" | head -1 | cut -f 2 -d '/')
     bash ${TEMPLATE_DIR}/wait-for-resource.sh create pod mediawiki
 
     # Filter for 'podpreset.admission.kubernetes.io' in the pod

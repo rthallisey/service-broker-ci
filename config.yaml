@@ -8,7 +8,6 @@ verify: wait-for-resource.sh create pod postgresql
 # that is not the same as the BindApp.
 bind: rthallisey/service-broker-ci/postgresql
 verify: wait-for-resource.sh create bindings.v1alpha1.servicecatalog.k8s.io binding
-verify: wait-for-resource.sh create podpreset binding
 
 # The verify field is run as a shell command
 verify: verify-bind.sh mediawiki123
@@ -21,7 +20,7 @@ unbind: postgresql | mediawiki123
 verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
 
 deprovision: rthallisey/service-broker-ci/mediawiki123
-verify: wait-for-resource.sh delete pod mediawiki
+verify: wait-for-resource.sh delete instance mediawiki
 
 deprovision: rthallisey/service-broker-ci/postgresql
-verify: wait-for-resource.sh delete pod postgresql
+verify: wait-for-resource.sh delete instance postgresql
