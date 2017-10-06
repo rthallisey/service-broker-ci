@@ -1,31 +1,43 @@
 # service-broker-ci
-GO package that provides a CI framework for testing Service Catalog Instances.
+GO package that provides a Travis CI framework for testing Service Catalog
+Instances.
 
-### Syntax
 
-```yaml
-<API KEYS>: <FILE>
+### Travis file
+To setup a gate with Travis you need the file ```.travis.yaml``` checked into
+your repo.
+```bash
+curl -O .travis.yml https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.yml
 ```
 
 
-##### API Keys
+### Config.yaml Syntax
+Next, create the file config.yaml in the top level of your APB git repo.
+The config.yaml file will hold the recipe for how your ci job will run.
+
+Inside config.yaml there are five API KEYS allowed:
 - provision
 - bind
 - unbind
 - deprovision
 - verify
 
+They are expected to be in the format:
+```yaml
+<API KEYS>: <FILE>
+```
 
-##### File
-The file field accepts a valid git repo ```rthallisey/service-broker-ci/postgresql```
-of the apb or a local file. The API Keys provision, bind, unbind, and
-deprovision will add a .yaml extention to the path.
+The _FILE_ field accepts a valid git repo ```rthallisey/service-broker-ci/postgresql```
+of any APB or a local file/script ```wait-for-resources.sh```. The Four API
+Keys: provision , bind, unbind, and deprovision expect a template so the .yaml
+extention will be added automatically by the framework.
 
 
 ##### Verify
-Verify is used to check if an action is successful.  Verify accepts a script
-from git repo ```rthallisey/service-broker-ci/wait-for-resource.sh``` or a local
-script ```wait-for-resource.sh```.
+Verify is used to check if an action is successful.  Use it to determine whether
+your APB lifecycle worked as expected.  Verify accepts a script from git repo
+```rthallisey/service-broker-ci/wait-for-resource.sh``` or a local script
+```wait-for-resource.sh```.
 
 The Verify API Key is also a shell. It can run any shell command and return the
 output.

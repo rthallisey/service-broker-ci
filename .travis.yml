@@ -9,8 +9,5 @@ before_script:
   - ./setup-gate.sh
   - make vendor
   - make install
-
-#  - bash <(curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/setup-gate.sh)
-#  - go get github.com/rthallisey/service-broker-ci/tree/master/cmd/ci
 script:
   - ci
