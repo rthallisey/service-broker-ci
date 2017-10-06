@@ -20,7 +20,7 @@ func getTemplate(repo string) (string, error) {
 		}
 	} else {
 		args := fmt.Sprintf("%s /tmp/%s", repo, repo)
-		output, err := RunCommand("cp", strings.Fields(args))
+		output, err := RunCommand("cp", args)
 		if err != nil {
 			// If the file doesn't exist, error later
 			if !strings.Contains(string(output), "No such file or directory") {
@@ -68,7 +68,11 @@ func resourceName(repo string) string {
 	return path[len(path)-1]
 }
 
-func RunCommand(cmd string, args []string) ([]byte, error) {
-	output, err := exec.Command(cmd, args...).CombinedOutput()
+func RunCommand(cmd string, args string) ([]byte, error) {
+	combinedCMD := fmt.Sprintf("%s %s", cmd, args)
+	// a := append([]string{cmd}, args...)
+	// t := strings.Join(a, " ")
+	fullCMD := append([]string{"-c"}, []string{combinedCMD}...)
+	output, err := exec.Command("bash", fullCMD...).CombinedOutput()
 	return output, err
 }
