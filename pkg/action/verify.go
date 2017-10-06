@@ -19,8 +19,6 @@ func Verify(repo string, args string) error {
 			strings.Contains(string(output), "No such file or directory") {
 			output, err = RunCommand(repo, args)
 			fmt.Println(string(output))
-			fmt.Println(string(output))
-			fmt.Println(string(output))
 			if err != nil {
 				return err
 			}
