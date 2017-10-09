@@ -3,13 +3,18 @@ GO package that provides a Travis CI framework for testing Service Catalog
 Instances.
 
 
-### Travis file
+### Download files
 To setup a gate with Travis you need the file ```.travis.yaml``` checked into
 your repo.
 ```bash
 curl -o .travis.yml https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.yml
 ```
 
+In order to allow Travis to install go in the gate, there needs to be a go file
+in your repo.
+```bash
+curl -O https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.go
+```
 
 ### Config.yaml Syntax
 Next, create the file config.yaml in the top level of your APB git repo.
