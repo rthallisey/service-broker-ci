@@ -84,10 +84,15 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string) (string, string) {
 	// '/scripts/broker-ci/wait-for-resource.sh create mediawiki'
 	scriptAndArgs := strings.Split(repoScriptAndArgs, repo)[1]
 
-	// Verify we have ARGS
+	// Only a repo
+	if scriptAndArgs == "" {
+		return repo, ""
+	}
+
+	// Script with no args
 	s := strings.Split(scriptAndArgs, " ")
-	if len(s) < 2 {
-		return s[0], ""
+	if len(s) == 1 {
+		return s[0], s[1]
 	}
 
 	script := s[0]
