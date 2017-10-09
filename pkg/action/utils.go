@@ -70,8 +70,6 @@ func resourceName(repo string) string {
 
 func RunCommand(cmd string, args string) ([]byte, error) {
 	combinedCMD := fmt.Sprintf("%s %s", cmd, args)
-	// a := append([]string{cmd}, args...)
-	// t := strings.Join(a, " ")
 	fullCMD := append([]string{"-c"}, []string{combinedCMD}...)
 	output, err := exec.Command("bash", fullCMD...).CombinedOutput()
 	return output, err
