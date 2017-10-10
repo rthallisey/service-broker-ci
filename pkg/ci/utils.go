@@ -36,7 +36,7 @@ func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
 		return script, args
 	} else {
 		// Using a Git Repo
-		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
+		script, args = getScriptAndArgs(repo, repoScriptAndArgs, dir)
 		if dir == "template" {
 			return fmt.Sprintf("%s/%s/%s/templates/%s.yaml", BaseURL, repo, Branch, script), args
 		} else if dir == "script" {
@@ -86,7 +86,7 @@ func resolveGitRepo(repo string) string {
 	return validRepo
 }
 
-func getScriptAndArgs(repo string, repoScriptAndArgs string) (string, string) {
+func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string, string) {
 	var s []string
 
 	if repo == "" || repoScriptAndArgs == "" {
@@ -103,11 +103,10 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string) (string, string) {
 		return r[len(r)-1], ""
 	}
 
-	// Account for branches
-	if strings.ContainsAny(scriptAndArgs, "/") && strings.ContainsAny(scriptAndArgs, " ") {
-		fmt.Println("Branches outside of master are not supported. Use the local file format")
-		scriptAndArgs = strings.Split(scriptAndArgs, " ")[1]
-	} else if strings.ContainsAny(scriptAndArgs, "/") {
+	fmt.Println(repo)
+	fmt.Println(scriptAndArgs)
+	// Templates have no args
+	if dir == "template" {
 		return scriptAndArgs, ""
 	}
 
