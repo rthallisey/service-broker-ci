@@ -1,26 +1,44 @@
-provision:  rthallisey/service-broker-ci/mediawiki123-apb
-verify: wait-for-resource.sh create pod mediawiki
+######
+# Provision:
+#  - Template with the name 'mediawiki123-apb' is expected at the address:
+#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki123-apb.yaml'
+######
+# provision: rthallisey/service-broker-ci/mediawiki123-apb
 
-provision: rthallisey/service-broker-ci/postgresql
-verify: wait-for-resource.sh create pod postgresql
+######
+# Provision:
+#  - Provsion a database using a local template in './templates/postgresql.yaml'.
+######
+# provision: postgresql
 
-# Specify the path of the BindApp. This will bind to the first provisioned app
-# that is not the same as the BindApp.
-bind: rthallisey/service-broker-ci/postgresql
-verify: wait-for-resource.sh create bindings.v1alpha1.servicecatalog.k8s.io binding
+######
+# Bind:
+#  - Specify the path of the BindApp. This will bind to the first provisioned
+#    app that is not the same as the BindApp.
+#  - This will look for the file 'https://github.com/rthallisey/service-broker-ci/blob/master/templates/postgresql-mediawiki123-apb-bind.yaml.yaml'
+#    and bind postgresql to mediawiki.
+######
+# bind: rthallisey/service-broker-ci/postgresql
 
-# The verify field is run as a shell command
-verify: verify-bind.sh mediawiki123
+######
+# Verify:
+#  - Verify any action has succeeded.
+#  - The verify field is run as a shell command
+######
+# verify: kubectl get pods | grep Running | grep mediawiki123
+# verify: verify-app-health.sh
 
-# The BindApp is the application that will be binded to the BindTarget.
-# Format:
+######
+# Unbind:
+#  - The BindApp is the application that is binded to the BindTarget.
+#  - Format:
 #      <BindApp> | <BindTarget>
-#
-unbind: postgresql | mediawiki123-apb
-verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
+#  - Unbind postgresql from mediawiki.
+######
+# unbind: postgresql | mediawiki123-apb
 
-deprovision: rthallisey/service-broker-ci/mediawiki123-apb
-verify: wait-for-resource.sh delete instance mediawiki
-
-deprovision: rthallisey/service-broker-ci/postgresql
-verify: wait-for-resource.sh delete instance postgresql
+######
+# Deprovision:
+#  - Delete the application from the cluster
+######
+# deprovision: rthallisey/service-broker-ci/mediawiki123-apb

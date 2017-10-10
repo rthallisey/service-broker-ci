@@ -16,16 +16,20 @@ in your repo.
 curl -O https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.go
 ```
 
-### Config.yaml Syntax
-Next, create the file config.yaml in the top level of your APB git repo.
-The config.yaml file will hold the recipe for how your ci job will run.
+Finally, curl an example config.yaml to help guide you.
+```
+curl -O https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/config.yaml
+```
 
+
+### Config.yaml Syntax
+The file ```config.yaml``` will hold the instructions for running the gate.
 Inside config.yaml there are five API KEYS allowed:
-- provision
-- bind
-- unbind
-- deprovision
-- verify
+- provision     |  Create an application
+- bind          |  Connect an application
+- unbind        |  Delete an application connection
+- deprovision   |  Delete an application
+- verify        |  Verify an action succeeded
 
 They are expected to be in the format:
 ```yaml
