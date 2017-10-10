@@ -1,4 +1,4 @@
-provision: rthallisey/service-broker-ci/mediawiki123
+provision:  rthallisey/service-broker-ci/mediawiki123-apb
 verify: wait-for-resource.sh create pod mediawiki
 
 provision: rthallisey/service-broker-ci/postgresql
@@ -16,10 +16,10 @@ verify: verify-bind.sh mediawiki123
 # Format:
 #      <BindApp> | <BindTarget>
 #
-unbind: postgresql | mediawiki123
+unbind: postgresql | mediawiki123-apb
 verify: wait-for-resource.sh delete bindings.v1alpha1.servicecatalog.k8s.io binding
 
-deprovision: rthallisey/service-broker-ci/mediawiki123
+deprovision: rthallisey/service-broker-ci/mediawiki123-apb
 verify: wait-for-resource.sh delete instance mediawiki
 
 deprovision: rthallisey/service-broker-ci/postgresql
