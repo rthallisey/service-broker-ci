@@ -5,7 +5,7 @@ import (
 )
 
 func Provision(repo string, cmd string) error {
-	template, err := getTemplate(repo)
+	template, err := getTemplate(repo, "template")
 	if err != nil {
 		return err
 	}

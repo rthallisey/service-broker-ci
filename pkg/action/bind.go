@@ -5,7 +5,7 @@ import (
 )
 
 func Bind(repo string, cmd string, target string) error {
-	template, err := getTemplate(repo)
+	template, err := getTemplate(repo, "template")
 	if err != nil {
 		return err
 	}

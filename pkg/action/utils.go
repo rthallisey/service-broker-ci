@@ -9,9 +9,10 @@ import (
 	"strings"
 )
 
-func getTemplate(repo string) (string, error) {
+func getTemplate(repo string, dir string) (string, error) {
 	var template string
 	var err error
+	var args string
 
 	if strings.Contains(repo, "https://raw.githubusercontent.com") {
 		template, err = downloadTemplate(repo)
@@ -19,7 +20,16 @@ func getTemplate(repo string) (string, error) {
 			return "", err
 		}
 	} else {
-		args := fmt.Sprintf("%s /tmp/%s", repo, repo)
+
+		if dir == "template" {
+			r := strings.Split(repo, "templates/")[1]
+			args = fmt.Sprintf("%s /tmp/%s", repo, r)
+			template = fmt.Sprintf("/tmp/%s", r)
+		} else {
+			args = fmt.Sprintf("%s /tmp/%s", repo, repo)
+			template = fmt.Sprintf("/tmp/%s", repo)
+		}
+
 		output, err := RunCommand("cp", args)
 		if err != nil {
 			// If the file doesn't exist, error later
@@ -29,7 +39,6 @@ func getTemplate(repo string) (string, error) {
 			}
 		}
 
-		template = fmt.Sprintf("/tmp/%s", repo)
 	}
 
 	return template, nil

@@ -6,7 +6,7 @@ import (
 )
 
 func Verify(repo string, args string) error {
-	script, err := getTemplate(repo)
+	script, err := getTemplate(repo, "script")
 	if err != nil {
 		return err
 	}

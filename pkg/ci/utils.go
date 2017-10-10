@@ -18,17 +18,24 @@ func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
 	// addr="rthallisey/service-broker-ci/wait-for-resource.sh"
 	// args="create mediawiki"
 	//
+
+	// Using a local file
 	if repo == "" {
 		items := strings.Split(repoScriptAndArgs, " ")
 		script = items[0]
+		if dir == "template" && len(items) > 1 {
+			fmt.Println("Error: %s should only be the name of the apb.")
+			return "", ""
+		} else if dir == "template" {
+			return fmt.Sprintf("templates/%s.yaml", script), args
+		}
+
 		if len(items) > 1 {
 			args = strings.Join(items[1:len(items)], " ")
 		}
-		if dir == "template" {
-			return fmt.Sprintf("templates/%s.yaml", script), args
-		}
 		return script, args
 	} else {
+		// Using a Git Repo
 		script, args = getScriptAndArgs(repo, repoScriptAndArgs)
 		if dir == "template" {
 			return fmt.Sprintf("%s/%s/%s/templates/%s.yaml", BaseURL, repo, Branch, script), args
@@ -80,6 +87,11 @@ func resolveGitRepo(repo string) string {
 }
 
 func getScriptAndArgs(repo string, repoScriptAndArgs string) (string, string) {
+	var s []string
+
+	if repo == "" || repoScriptAndArgs == "" {
+		return repo, repoScriptAndArgs
+	}
 	// Split 'openshift/ansible-service-broker' and
 	// '/scripts/broker-ci/wait-for-resource.sh create mediawiki'
 	scriptAndArgs := strings.Split(repoScriptAndArgs, repo)[1]
@@ -91,8 +103,16 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string) (string, string) {
 		return r[len(r)-1], ""
 	}
 
+	// Account for branches
+	if strings.ContainsAny(scriptAndArgs, "/") && strings.ContainsAny(scriptAndArgs, " ") {
+		fmt.Println("Branches outside of master are not supported. Use the local file format")
+		scriptAndArgs = strings.Split(scriptAndArgs, " ")[1]
+	} else if strings.ContainsAny(scriptAndArgs, "/") {
+		return scriptAndArgs, ""
+	}
+
+	s = strings.Split(scriptAndArgs, " ")
 	// Script with no args
-	s := strings.Split(scriptAndArgs, " ")
 	if len(s) == 1 {
 		return s[0], s[1]
 	}
