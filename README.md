@@ -54,6 +54,12 @@ output.
 verify: oc get pods
 ```
 
+The Verify action is optional, but it's highly recommended you use it to verify
+an action.  There are some premade scripts you can use that will provide basic
+verification:
+ - https://github.com/rthallisey/service-broker-ci/blob/master/wait-for-resource.sh
+ - https://github.com/rthallisey/service-broker-ci/blob/master/verify-bind.sh
+
 
 ### Config file format
 Templates used by provision, bind, unbind, and deprovision are expected to be in

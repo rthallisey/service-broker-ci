@@ -2,7 +2,7 @@ vendor:
 	@glide install -v
 
 install:
-	@go build -i ./cmd/ci
+	@go install ./cmd/ci
 
 run: install
 	@ci
