@@ -1,4 +1,4 @@
 package main
 
-// Emtpy function to enable tarvis golang setup
+// Empty function to enable travis golang setup
 func main() {}
