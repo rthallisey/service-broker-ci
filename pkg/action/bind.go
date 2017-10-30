@@ -1,6 +1,7 @@
 package action
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 )
@@ -56,13 +57,24 @@ func Bind(repo string, cmd string, target string) error {
 	data := strings.TrimPrefix(string(bindData), "map[")
 	data = strings.TrimSuffix(data, "]")
 
-	// "DB_PASSWORD=YWRtaW4= DB_PORT=NTQzMg== DB_NAME=YWRtaW4="
-	data = strings.Replace(data, ":", "=", -1)
+	decodeMap := strings.Split(data, " ")
+	var dataString string
+
+	// decode base64 bindData
+	for _, m := range decodeMap {
+		keyValue := strings.Split(m, ":")
+		decoded, err := base64.StdEncoding.DecodeString(keyValue[1])
+		if err != nil {
+			return err
+		}
+		dataString = fmt.Sprintf("%s %s=%s", dataString, keyValue[0], decoded)
+	}
 
 	fmt.Printf("Looking for a Deployment with the SAME name used in your ServiceInstance: %s\n", instanceName)
+
 	// Inject bind data into the pod
-	// oc env dc mediawiki123 DB_HOST=$DB_HOST DB_NAME=$DB_NAME
-	output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, data))
+	// oc env dc mediawiki123 DB_HOST=postgres DB_NAME=admin
+	output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
 	fmt.Println(string(output))
 	if err == nil {
 		return nil
