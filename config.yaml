@@ -15,10 +15,10 @@
 # Bind:
 #  - Specify the path of the BindApp. This will bind to the first provisioned
 #    app that is not the same as the BindApp.
-#  - This will look for the file 'https://github.com/rthallisey/service-broker-ci/blob/master/templates/postgresql-mediawiki123-apb-bind.yaml.yaml'
+#  - This will look for the file './templates/postgresql-mediawiki123-apb-bind.yaml'
 #    and bind postgresql to mediawiki.
 ######
-# bind: rthallisey/service-broker-ci/postgresql
+# bind: postgresql
 
 ######
 # Verify:
