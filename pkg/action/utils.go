@@ -1,12 +1,14 @@
 package action
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func getTemplate(repo string, dir string) (string, error) {
@@ -82,4 +84,89 @@ func RunCommand(cmd string, args string) ([]byte, error) {
 	fullCMD := append([]string{"-c"}, []string{combinedCMD}...)
 	output, err := exec.Command("bash", fullCMD...).CombinedOutput()
 	return output, err
+}
+
+func getObjectStatus(appName string) (string, string) {
+	statusReason := fmt.Sprintf("get -f %s -o jsonpath='{ .status.conditions[0].reason }'", appName)
+	reason, err := RunCommand("oc", statusReason)
+	if err != nil {
+		return "", ""
+	}
+
+	statusMessage := fmt.Sprintf("get -f %s -o jsonpath='{ .status.conditions[0].message }'", appName)
+	message, err := RunCommand("oc", statusMessage)
+	if err != nil {
+		return "", ""
+	}
+
+	return string(reason), string(message)
+}
+
+const (
+	Retries = 60
+
+	Provisioned = "ProvisionedSuccessfully"
+	Binded      = "InjectedBindResult"
+)
+
+func waitUntilReady(resourceName string) error {
+	fmt.Printf("Waiting for %s to be ready\n", resourceName)
+	var attempt int
+	for attempt = 0; attempt < Retries; attempt++ {
+		reason, status := getObjectStatus(resourceName)
+		if reason == Provisioned || reason == Binded {
+			fmt.Println("Bind or provison completed")
+			fmt.Println(status)
+			break
+		}
+		fmt.Println(reason)
+
+		attempt += 1
+		time.Sleep(time.Duration(5) * time.Second)
+	}
+	if attempt == Retries {
+		return errors.New("Timed out waiting for resource")
+	}
+	return nil
+}
+
+func waitUntilResourceReady(resourceName string, resourceType string) error {
+	var attempt int
+	for attempt = 0; attempt < Retries; attempt++ {
+		output, err := RunCommand("oc", fmt.Sprintf("get %s %s", resourceType, resourceName))
+
+		if err == nil {
+			break
+		}
+		fmt.Println(string(output))
+
+		attempt += 1
+		time.Sleep(time.Duration(5) * time.Second)
+	}
+	if attempt == Retries {
+		return errors.New("Timed out waiting for resource")
+	}
+
+	return nil
+}
+
+func waitUntilDeleted(resourceName string) error {
+	var attempt int
+	for attempt = 0; attempt < Retries; attempt++ {
+		output, err := RunCommand("oc", fmt.Sprintf("get -f %s", resourceName))
+
+		// RunCommand errors if the resource has been deleted
+		if err != nil {
+			break
+		}
+		fmt.Println(string(output))
+
+		attempt += 1
+		time.Sleep(time.Duration(5) * time.Second)
+	}
+	if attempt == Retries {
+		return errors.New("Timed out waiting for resource")
+	}
+
+	return nil
 }

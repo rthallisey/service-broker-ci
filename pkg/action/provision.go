@@ -18,5 +18,10 @@ func Provision(repo string, cmd string) error {
 	if err != nil {
 		return err
 	}
+
+	err = waitUntilReady(template)
+	if err != nil {
+		return err
+	}
 	return nil
 }

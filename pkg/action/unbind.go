@@ -15,5 +15,11 @@ func Unbind(binding []string, cmd string) error {
 	if err != nil {
 		return err
 	}
+
+	err = waitUntilDeleted(template)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
