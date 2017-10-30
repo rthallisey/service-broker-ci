@@ -22,6 +22,21 @@ curl -O https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/co
 ```
 
 
+### Creating the ClusterServiceInstance template
+At this point, you have already written your apb. Let's create the
+ServiceInstance template that will launch your apb.
+
+When using the [apb tool](https://github.com/ansibleplaybookbundle/ansible-playbook-bundle), run
+```apb serviceinstace``` to generate a ServiceInstance template. You will need
+to edit parameters and select a plan before it's an acceptable resource.
+
+
+### Naming your resource
+It's required that the resource being created shares the name with the
+ServiceInstance.  The matching names are used to identify which resource
+will receive the bind data.
+
+
 ### Config.yaml Syntax
 The file ```config.yaml``` will hold the instructions for running the gate.
 Inside config.yaml there are five API KEYS allowed:
@@ -55,10 +70,10 @@ verify: oc get pods
 ```
 
 The Verify action is optional, but it's highly recommended you use it to verify
-an action.  There are some premade scripts you can use that will provide basic
-verification:
+that your apb worked correctly.
+Example verification scripts:
  - https://github.com/rthallisey/service-broker-ci/blob/master/wait-for-resource.sh
- - https://github.com/rthallisey/service-broker-ci/blob/master/verify-bind.sh
+ - https://github.com/rthallisey/service-broker-ci/blob/master/verify-mediawiki-postgresql.sh
 
 
 ### Config file format
