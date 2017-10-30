@@ -10,4 +10,7 @@ run: install
 run-k: install
 	@ci --cluster kubernetes
 
-.PHONY: run run-k build vendor
+clean:
+	@./clean.sh
+
+.PHONY: run run-k build vendor clean
