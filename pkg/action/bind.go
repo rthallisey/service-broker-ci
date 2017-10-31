@@ -81,7 +81,7 @@ func Bind(repo string, cmd string, target string) error {
 	for attempt = 0; attempt < retries; attempt++ {
 		output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
 		fmt.Println(string(output))
-		if err != nil {
+		if err == nil {
 			break
 		}
 		attempt += 1
