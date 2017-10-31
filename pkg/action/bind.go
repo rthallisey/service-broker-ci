@@ -2,8 +2,10 @@ package action
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"strings"
+	"time"
 )
 
 func Bind(repo string, cmd string, target string) error {
@@ -74,10 +76,19 @@ func Bind(repo string, cmd string, target string) error {
 
 	// Inject bind data into the pod
 	// oc env dc mediawiki123 DB_HOST=postgres DB_NAME=admin
-	output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
-	fmt.Println(string(output))
-	if err == nil {
-		return nil
+	var attempt int
+	retries := 60
+	for attempt = 0; attempt < retries; attempt++ {
+		output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
+		fmt.Println(string(output))
+		if err != nil {
+			break
+		}
+		attempt += 1
+		time.Sleep(time.Duration(5) * time.Second)
+	}
+	if attempt == retries {
+		return errors.New(fmt.Sprint("Timed out updating deployment %s", instanceName))
 	}
 
 	return nil
