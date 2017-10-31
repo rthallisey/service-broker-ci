@@ -11,6 +11,7 @@ for r in $(seq $RETRIES); do
     else
 	echo "SUCCESS"
 	echo "You can double check by opening http://${ROUTE} in your browser"
+	break
     fi
     sleep 2
 done
