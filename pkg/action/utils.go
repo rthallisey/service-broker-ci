@@ -121,7 +121,7 @@ func waitUntilReady(resourceName string) error {
 		fmt.Println(reason)
 
 		attempt += 1
-		time.Sleep(time.Duration(5) * time.Second)
+		time.Sleep(time.Duration(10) * time.Second)
 	}
 	if attempt == Retries {
 		return errors.New("Timed out waiting for resource")
