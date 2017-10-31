@@ -103,8 +103,6 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string
 		return r[len(r)-1], ""
 	}
 
-	fmt.Println(repo)
-	fmt.Println(scriptAndArgs)
 	// Templates have no args
 	if dir == "template" {
 		return scriptAndArgs, ""
@@ -113,7 +111,7 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string
 	s = strings.Split(scriptAndArgs, " ")
 	// Script with no args
 	if len(s) == 1 {
-		return s[0], s[1]
+		return s[0], ""
 	}
 
 	script := s[0]

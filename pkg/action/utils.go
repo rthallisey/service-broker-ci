@@ -115,7 +115,6 @@ func waitUntilReady(resourceName string) error {
 	for attempt = 0; attempt < Retries; attempt++ {
 		reason, status := getObjectStatus(resourceName)
 		if reason == Provisioned || reason == Binded {
-			fmt.Println("Bind or provison completed")
 			fmt.Println(status)
 			break
 		}
