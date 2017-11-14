@@ -37,16 +37,16 @@ func Bind(repo string, cmd string, target string) error {
 	}
 	fmt.Printf("Using Instance Name: %s\n", instanceName)
 
-	err = waitUntilResourceReady("mediawiki-postgresql-binding", "secret")
-	if err != nil {
-		return err
-	}
-
 	// Get the name of the secret
 	repoName := resourceName(repo)
 	secretName, err := RunCommand("oc", fmt.Sprintf("get -f /tmp/%s -o jsonpath='{ .spec.secretName }'", repoName))
 	if err != nil {
 		fmt.Println(secretName)
+		return err
+	}
+
+	err = waitUntilResourceReady(secretName, "secret")
+	if err != nil {
 		return err
 	}
 
