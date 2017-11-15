@@ -45,7 +45,7 @@ func Bind(repo string, cmd string, target string) error {
 		return err
 	}
 
-	err = waitUntilResourceReady(secretName, "secret")
+	err = waitUntilResourceReady(string(secretName), "secret")
 	if err != nil {
 		return err
 	}
