@@ -8,10 +8,13 @@ import (
 )
 
 // TODO: Consider renaming to getRepoAddr
-func getScriptAddr(repoScriptAndArgs string, dir string) (string, string) {
+func getScriptAddr(repoScriptAndArgs string, repo string, dir string) (string, string) {
 	var script, args string
-	// Check for a valid git repo, otherwise look locally
-	repo := resolveGitRepo(repoScriptAndArgs)
+
+	// TODO: Split this function into pieces. It has mutiple uses:
+	//    - check for local template
+	//    - check for valid tempalte
+	//    - render template url
 
 	// Split rthallisey/service-broker-ci/wait-for-resource.sh create mediawiki
 	//
@@ -94,10 +97,9 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string
 	}
 	// Split 'openshift/ansible-service-broker' and
 	// '/scripts/broker-ci/wait-for-resource.sh create mediawiki'
-	scriptAndArgs := strings.Split(repoScriptAndArgs, repo)[1]
-
-	// Only a the repo
-	if scriptAndArgs == "" {
+	a := strings.Split(repoScriptAndArgs, repo)
+	scriptAndArgs := a[1]
+	if repoScriptAndArgs == repo || scriptAndArgs == " " {
 		// Return the resource name
 		r := strings.Split(repo, "/")
 		return r[len(r)-1], ""

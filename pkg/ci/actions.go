@@ -17,7 +17,8 @@ type Broker interface {
 }
 
 func (c *Config) Provision(repo string) error {
-	r, _ := getScriptAddr(repo, "template")
+	validRepo := resolveGitRepo(repo)
+	r, _ := getScriptAddr(repo, validRepo, "template")
 	if r == "" {
 		return errors.New("Can't using an empty address for provision")
 	}
@@ -32,6 +33,10 @@ func (c *Config) Provision(repo string) error {
 }
 
 func (c *Config) Bind(repo string) error {
+	if repo == "" {
+		return errors.New("Can't using an empty address for bind")
+	}
+
 	bindTarget, p, err := findBindTarget(repo, c.Provisioned)
 	if err != nil {
 		return err
@@ -44,16 +49,23 @@ func (c *Config) Bind(repo string) error {
 	t := strings.Split(bindTarget, "/")
 	target := t[len(t)-1]
 
+	validRepo := resolveGitRepo(repo)
+
 	// ansibleplaybookbundle/postgresql -> ansibleplaybookbundle/postgresql-mediawiki-bind
 	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
 	repo = fmt.Sprintf("%s-%s-bind", repo, target)
 
-	r, _ := getScriptAddr(repo, "template")
-	if r == "" {
-		return errors.New("Can't using an empty address for bind")
+	r := strings.Split(repo, "/")
+	resource := r[len(r)-1]
+	rawGitURL := ""
+	if validRepo == "" {
+		rawGitURL = fmt.Sprintf("templates/%s.yaml", resource)
+	} else {
+		rawGitURL = fmt.Sprintf("%s/%s/%s/templates/%s.yaml", BaseURL, validRepo, Branch, resource)
 	}
+	fmt.Println(rawGitURL)
 
-	err = action.Bind(r, c.Cluster, bindTarget)
+	err = action.Bind(rawGitURL, c.Cluster, bindTarget)
 	if err != nil {
 		return err
 	}
@@ -61,7 +73,8 @@ func (c *Config) Bind(repo string) error {
 }
 
 func (c *Config) Deprovision(repo string) error {
-	r, _ := getScriptAddr(repo, "template")
+	validRepo := resolveGitRepo(repo)
+	r, _ := getScriptAddr(repo, validRepo, "template")
 	if r == "" {
 		return errors.New("Can't using an empty address for deprovision")
 	}
@@ -84,7 +97,8 @@ func (c *Config) Unbind(bindInfo string) error {
 }
 
 func (c *Config) Verify(repoAndArgs string) error {
-	repo, args := getScriptAddr(repoAndArgs, "script")
+	validRepo := resolveGitRepo(repoAndArgs)
+	repo, args := getScriptAddr(repoAndArgs, validRepo, "script")
 	if repo == "" {
 		return errors.New("Can't using an empty address for verify")
 	}
