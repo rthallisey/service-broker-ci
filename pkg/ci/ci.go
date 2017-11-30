@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/rthallisey/service-broker-ci/pkg/runtime"
 )
 
 func CreateCi() (*Config, error) {
@@ -70,6 +72,7 @@ func (c *Config) callAction(action string, repo string) error {
 // Verify the cluster we're running on
 func (c *Config) setCluster(client string) error {
 	client = strings.ToLower(client)
+	runtime.GetRuntime(client)
 	if client == "openshift" {
 		c.Cluster = "oc"
 		fmt.Println("Using OpenShift Cluster")

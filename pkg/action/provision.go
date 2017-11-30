@@ -2,6 +2,8 @@ package action
 
 import (
 	"fmt"
+
+	"github.com/rthallisey/service-broker-ci/pkg/runtime"
 )
 
 func Provision(repo string, cmd string) error {
@@ -12,7 +14,7 @@ func Provision(repo string, cmd string) error {
 
 	fmt.Printf("Running: %s create -f %s\n", cmd, template)
 	args := fmt.Sprintf("create -f %s", template)
-	output, err := RunCommand(cmd, args)
+	output, err := runtime.RunCommand(cmd, args)
 
 	fmt.Println(string(output))
 	if err != nil {
