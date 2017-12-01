@@ -6,9 +6,10 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/rthallisey/service-broker-ci/pkg/runtime"
 )
 
 func getTemplate(repo string, dir string) (string, error) {
@@ -32,7 +33,7 @@ func getTemplate(repo string, dir string) (string, error) {
 			template = fmt.Sprintf("/tmp/%s", repo)
 		}
 
-		output, err := RunCommand("cp", args)
+		output, err := runtime.RunCommand("cp", args)
 		if err != nil {
 			// If the file doesn't exist, error later
 			if !strings.Contains(string(output), "No such file or directory") {
@@ -79,22 +80,15 @@ func resourceName(repo string) string {
 	return path[len(path)-1]
 }
 
-func RunCommand(cmd string, args string) ([]byte, error) {
-	combinedCMD := fmt.Sprintf("%s %s", cmd, args)
-	fullCMD := append([]string{"-c"}, []string{combinedCMD}...)
-	output, err := exec.Command("bash", fullCMD...).CombinedOutput()
-	return output, err
-}
-
 func getObjectStatus(appName string) (string, string) {
 	statusReason := fmt.Sprintf("get -f %s -o jsonpath='{ .status.conditions[0].reason }'", appName)
-	reason, err := RunCommand("oc", statusReason)
+	reason, err := runtime.RunCommand("kubectl", statusReason)
 	if err != nil {
 		return "", ""
 	}
 
 	statusMessage := fmt.Sprintf("get -f %s -o jsonpath='{ .status.conditions[0].message }'", appName)
-	message, err := RunCommand("oc", statusMessage)
+	message, err := runtime.RunCommand("kubectl", statusMessage)
 	if err != nil {
 		return "", ""
 	}
@@ -132,7 +126,7 @@ func waitUntilReady(resourceName string) error {
 func waitUntilResourceReady(resourceName string, resourceType string) error {
 	var attempt int
 	for attempt = 0; attempt < Retries; attempt++ {
-		output, err := RunCommand("oc", fmt.Sprintf("get %s %s", resourceType, resourceName))
+		output, err := runtime.RunCommand("kubectl", fmt.Sprintf("get %s %s", resourceType, resourceName))
 
 		if err == nil {
 			break
@@ -152,9 +146,9 @@ func waitUntilResourceReady(resourceName string, resourceType string) error {
 func waitUntilDeleted(resourceName string) error {
 	var attempt int
 	for attempt = 0; attempt < Retries; attempt++ {
-		output, err := RunCommand("oc", fmt.Sprintf("get -f %s", resourceName))
+		output, err := runtime.RunCommand("kubectl", fmt.Sprintf("get -f %s", resourceName))
 
-		// RunCommand errors if the resource has been deleted
+		// runtime.RunCommand errors if the resource has been deleted
 		if err != nil {
 			break
 		}

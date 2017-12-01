@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/rthallisey/service-broker-ci/pkg/runtime"
 )
 
 func Bind(repo string, cmd string, target string) error {
@@ -16,7 +18,7 @@ func Bind(repo string, cmd string, target string) error {
 
 	fmt.Printf("Running: %s create -f %s\n", cmd, template)
 	args := fmt.Sprintf("create -f %s", template)
-	output, err := RunCommand(cmd, args)
+	output, err := runtime.RunCommand(cmd, args)
 
 	fmt.Println(string(output))
 	if err != nil {
@@ -30,7 +32,7 @@ func Bind(repo string, cmd string, target string) error {
 	}
 
 	targetName := resourceName(target)
-	instanceName, err := RunCommand("oc", fmt.Sprintf("get -f /tmp/%s.yaml -o jsonpath='{ .metadata.name }'", targetName))
+	instanceName, err := runtime.RunCommand("kubectl", fmt.Sprintf("get -f /tmp/%s.yaml -o jsonpath='{ .metadata.name }'", targetName))
 	if err != nil {
 		fmt.Println(string(instanceName))
 		return err
@@ -39,7 +41,7 @@ func Bind(repo string, cmd string, target string) error {
 
 	// Get the name of the secret
 	repoName := resourceName(repo)
-	secretName, err := RunCommand("oc", fmt.Sprintf("get -f /tmp/%s -o jsonpath='{ .spec.secretName }'", repoName))
+	secretName, err := runtime.RunCommand("kubectl", fmt.Sprintf("get -f /tmp/%s -o jsonpath='{ .spec.secretName }'", repoName))
 	if err != nil {
 		fmt.Println(secretName)
 		return err
@@ -51,7 +53,7 @@ func Bind(repo string, cmd string, target string) error {
 	}
 
 	// Gather bind data from secret
-	bindData, err := RunCommand("oc", fmt.Sprintf("get secret %s -o jsonpath='{.data}'", secretName))
+	bindData, err := runtime.RunCommand("kubectl", fmt.Sprintf("get secret %s -o jsonpath='{.data}'", secretName))
 	if err != nil {
 		fmt.Println(bindData)
 		return err
@@ -79,8 +81,8 @@ func Bind(repo string, cmd string, target string) error {
 	var attempt int
 	retries := 60
 	for attempt = 0; attempt < retries; attempt++ {
-		output, err = RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
-		fmt.Println(string(output))
+		out, err := runtime.Runtime.InjectBindData(instanceName, dataString)
+		fmt.Println(string(out))
 		if err == nil {
 			break
 		}
