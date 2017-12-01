@@ -74,8 +74,6 @@ func Bind(repo string, cmd string, target string) error {
 		dataString = fmt.Sprintf("%s %s=%s", dataString, keyValue[0], decoded)
 	}
 
-	fmt.Printf("Looking for a Deployment with the SAME name used in your ServiceInstance: %s\n", instanceName)
-
 	// Inject bind data into the pod
 	// oc env dc mediawiki123 DB_HOST=postgres DB_NAME=admin
 	var attempt int
