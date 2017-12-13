@@ -2,30 +2,12 @@ language: go
 go:
   - "1.8.x"
 dist: trusty
-sudo: required
+sudo: true
 group: edge
 
-jobs:
-   include:
-     - stage: "Kubernetes Gate"
-       env:
-         - CLUSTER="kubernetes"
-       script:
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_install
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s install
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_script
-#         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-cluster.sh | bash -s
-         - ./setup-cluster.sh
-         - make vendor
-         - make run
-     - stage: "OpenShift Gate"
-       env:
-         - CLUSTER="openshift"
-       script:
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_install
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s install
-         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_script
-#         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-cluster.sh | bash -s
-         - ./setup-cluster.sh
-         - make vendor
-         - make run
+env:
+  - CHANGE_MINIKUBE_NONE_USER=true
+
+before_script:
+  - ./setup-minikube.sh
+  - ./setup-broker.sh
