@@ -1,9 +1,9 @@
 ######
 # Provision:
-#  - Template with the name 'mediawiki123-apb' is expected at the address:
-#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki123-apb.yaml'
+#  - Template with the name 'mediawiki-apb' is expected at the address:
+#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki-apb.yaml'
 ######
-# provision: ansibleplaybookbundle/mediawiki123-apb
+# provision: ansibleplaybookbundle/mediawiki-apb
 
 ######
 # Provision:
@@ -15,7 +15,7 @@
 # Bind:
 #  - Specify the path of the BindApp. This will bind to the first provisioned
 #    app that is not the same as the BindApp.
-#  - This will look for the file './templates/postgresql-mediawiki123-apb-bind.yaml'
+#  - This will look for the file './templates/postgresql-mediawiki-apb-bind.yaml'
 #    and bind postgresql to mediawiki.
 ######
 # bind: postgresql
@@ -25,7 +25,7 @@
 #  - Verify any action has succeeded.
 #  - The verify field is run as a shell command
 ######
-# verify: kubectl get pods | grep Running | grep mediawiki123
+# verify: kubectl get pods | grep Running | grep mediawiki
 # verify: verify-app-health.sh
 
 ######
@@ -35,21 +35,21 @@
 #      <BindApp> | <BindTarget>
 #  - Unbind postgresql from mediawiki.
 ######
-# unbind: postgresql | mediawiki123-apb
+# unbind: postgresql | mediawiki-apb
 
 ######
 # Deprovision:
 #  - Delete the application from the cluster
 ######
-# deprovision: rthallisey/service-broker-ci/mediawiki123-apb
+# deprovision: rthallisey/service-broker-ci/mediawiki-apb
 
 # Example job:
-provision: ansibleplaybookbundle/mediawiki123-apb
-provision: ansibleplaybookbundle/rhscl-postgresql-apb
+provision: ansibleplaybookbundle/mediawiki-apb
+provision: postgresql-apb
 
-bind: ansibleplaybookbundle/rhscl-postgresql-apb
+bind: postgresql-apb
 verify: rthallisey/service-broker-ci/verify-mediawiki-postgresql.sh
-unbind: rhscl-postgresql-apb | mediawiki123-apb
+unbind: postgresql-apb | mediawiki-apb
 
-deprovision: ansibleplaybookbundle/mediawiki123-apb
-deprovision: ansibleplaybookbundle/rhscl-postgresql-apb
+deprovision: ansibleplaybookbundle/mediawiki-apb
+deprovision: postgresql-apb
