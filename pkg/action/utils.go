@@ -97,7 +97,7 @@ func getObjectStatus(appName string) (string, string) {
 }
 
 const (
-	Retries = 60
+	Retries = 120
 
 	Provisioned = "ProvisionedSuccessfully"
 	Binded      = "InjectedBindResult"
