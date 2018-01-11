@@ -17,13 +17,17 @@ type Broker interface {
 }
 
 func (c *Config) Provision(repo string) error {
-	validRepo := resolveGitRepo(repo)
+	validRepo, err := resolveGitRepo(repo)
+	if err != nil {
+		return err
+	}
+
 	r, _ := getScriptAddr(repo, validRepo, "template")
 	if r == "" {
 		return errors.New("Can't using an empty address for provision")
 	}
 
-	err := action.Provision(r, c.Cluster)
+	err = action.Provision(r, c.Cluster)
 	if err != nil {
 		return err
 	}
@@ -49,7 +53,10 @@ func (c *Config) Bind(repo string) error {
 	t := strings.Split(bindTarget, "/")
 	target := t[len(t)-1]
 
-	validRepo := resolveGitRepo(repo)
+	validRepo, err := resolveGitRepo(repo)
+	if err != nil {
+		return err
+	}
 
 	// ansibleplaybookbundle/postgresql -> ansibleplaybookbundle/postgresql-mediawiki-bind
 	//                                    <gitOrg>/<bindApp>-<bindTarget>-bind
@@ -73,13 +80,17 @@ func (c *Config) Bind(repo string) error {
 }
 
 func (c *Config) Deprovision(repo string) error {
-	validRepo := resolveGitRepo(repo)
+	validRepo, err := resolveGitRepo(repo)
+	if err != nil {
+		return err
+	}
+
 	r, _ := getScriptAddr(repo, validRepo, "template")
 	if r == "" {
 		return errors.New("Can't using an empty address for deprovision")
 	}
 
-	err := action.Deprovision(r, c.Cluster)
+	err = action.Deprovision(r, c.Cluster)
 	if err != nil {
 		return err
 	}
@@ -97,13 +108,17 @@ func (c *Config) Unbind(bindInfo string) error {
 }
 
 func (c *Config) Verify(repoAndArgs string) error {
-	validRepo := resolveGitRepo(repoAndArgs)
+	validRepo, err := resolveGitRepo(repoAndArgs)
+	if err != nil {
+		return err
+	}
+
 	repo, args := getScriptAddr(repoAndArgs, validRepo, "script")
 	if repo == "" {
 		return errors.New("Can't using an empty address for verify")
 	}
 
-	err := action.Verify(repo, args)
+	err = action.Verify(repo, args)
 	if err != nil {
 		return err
 	}
