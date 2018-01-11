@@ -49,7 +49,7 @@ func getScriptAddr(repoScriptAndArgs string, repo string, dir string) (string, s
 	}
 }
 
-func resolveGitRepo(repo string) string {
+func resolveGitRepo(repo string) (string, error) {
 	var validRepo string
 
 	// Loop through each string in a git repo and combine them to test
@@ -86,7 +86,10 @@ func resolveGitRepo(repo string) string {
 			}
 		}
 	}
-	return validRepo
+	if strings.Contains(validRepo, "https://github.com") {
+		return "", errors.New(fmt.Sprintf("Invalid git repo %s", validRepo))
+	}
+	return validRepo, nil
 }
 
 func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string, string) {
@@ -98,6 +101,10 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string
 	// Split 'openshift/ansible-service-broker' and
 	// '/scripts/broker-ci/wait-for-resource.sh create mediawiki'
 	a := strings.Split(repoScriptAndArgs, repo)
+
+	if len(a) <= 1 {
+		panic(fmt.Sprintf("Repo: %s. ScriptAndArgs: %s. Config.yaml has: %s. Splitting repo from args failed.", repo, a, repoScriptAndArgs))
+	}
 	scriptAndArgs := a[1]
 	if repoScriptAndArgs == repo || scriptAndArgs == " " {
 		// Return the resource name
