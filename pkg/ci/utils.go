@@ -103,7 +103,7 @@ func getScriptAndArgs(repo string, repoScriptAndArgs string, dir string) (string
 	a := strings.Split(repoScriptAndArgs, repo)
 
 	if len(a) <= 1 {
-		panic(fmt.Sprintf("Repo %s. Config.yaml has %s. Splitting repo from args failed.", repo, repoScriptAndArgs))
+		panic(fmt.Sprintf("Repo: %s. ScriptAndArgs: %s. Config.yaml has: %s. Splitting repo from args failed.", repo, a, repoScriptAndArgs))
 	}
 	scriptAndArgs := a[1]
 	if repoScriptAndArgs == repo || scriptAndArgs == " " {
