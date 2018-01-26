@@ -4,12 +4,27 @@ go:
 dist: trusty
 sudo: required
 group: edge
+env:
+  - CHANGE_MINIKUBE_NONE_USER=true
 
-before_script:
-  - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_install
-  - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s install
-  - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_script
-  - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-cluster.sh | bash -s
-  - go get github.com/rthallisey/service-broker-ci/cmd/ci
-script:
-  - ci
+jobs:
+  include:
+    - stage: "OpenShift and Kubernetes CI"
+      before_script:
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_install
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s install
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s before_script
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-cluster.sh | bash -s
+        - go get github.com/rthallisey/service-broker-ci/cmd/ci
+      script:
+        - ci
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/gather-logs.sh | bash -s
+    - # Kubernetes
+      before_script:
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-minikube.sh | bash -s
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-catalog.sh | bash -s
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/run_latest_k8s_build.sh | bash -s
+        - go get github.com/rthallisey/service-broker-ci/cmd/ci
+      script:
+        - ci --cluster kubernetes
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/gather-logs.sh | bash -s
