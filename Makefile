@@ -8,7 +8,7 @@ run: install
 	@ci
 
 run-k: install
-	@ci --cluster kubernetes
+	@KUBERNETES="k8s" ci --cluster kubernetes
 
 clean:
 	@./clean.sh

@@ -29,5 +29,5 @@ jobs:
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/run_latest_k8s_build.sh | bash -s
         - go get github.com/rthallisey/service-broker-ci/cmd/ci
       script:
-        - ci --cluster kubernetes
+        - KUBERNETES="k8s" ci --cluster kubernetes
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/gather-logs.sh | bash -s
