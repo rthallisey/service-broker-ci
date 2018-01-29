@@ -4,7 +4,7 @@ Instances.
 
 
 ### Download files
-To setup a gate with Travis you need the file ```.travis.yaml``` checked into
+To setup a gate with Travis you need the file ```.travis.yml``` checked into
 your repo.
 ```bash
 curl -o .travis.yml https://raw.githubusercontent.com/rthallisey/service-broker-ci/master/travis.yml
