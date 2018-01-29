@@ -1,49 +1,12 @@
 ######
-# Provision:
-#  - Template with the name 'mediawiki123-apb' is expected at the address:
-#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki123-apb.yaml'
+# APIs:
+#   - provision
+#   - bind
+#   - verify
+#   - unbind
+#   - deprovision
 ######
-# provision: ansibleplaybookbundle/mediawiki123-apb
-
-######
-# Provision:
-#  - Provsion a database using a local template in './templates/postgresql.yaml'.
-######
-# provision: postgresql
-
-######
-# Bind:
-#  - Specify the path of the BindApp. This will bind to the first provisioned
-#    app that is not the same as the BindApp.
-#  - This will look for the file './templates/postgresql-mediawiki123-apb-bind.yaml'
-#    and bind postgresql to mediawiki.
-######
-# bind: postgresql
-
-######
-# Verify:
-#  - Verify any action has succeeded.
-#  - The verify field is run as a shell command
-######
-# verify: kubectl get pods | grep Running | grep mediawiki123
-# verify: verify-app-health.sh
-
-######
-# Unbind:
-#  - The BindApp is the application that is binded to the BindTarget.
-#  - Format:
-#      <BindApp> | <BindTarget>
-#  - Unbind postgresql from mediawiki.
-######
-# unbind: postgresql | mediawiki123-apb
-
-######
-# Deprovision:
-#  - Delete the application from the cluster
-######
-# deprovision: rthallisey/service-broker-ci/mediawiki123-apb
-
-# Example job:
+# Example multi-apb integration test
 provision: ansibleplaybookbundle/mediawiki-apb
 provision: ansibleplaybookbundle/postgresql-apb
 
@@ -53,3 +16,39 @@ unbind: postgresql-apb | mediawiki-apb
 
 deprovision: ansibleplaybookbundle/mediawiki-apb
 deprovision: ansibleplaybookbundle/postgresql-apb
+
+######
+# How to use the API calls:
+#
+#  - A Template with the name 'mediawiki123-apb' is expected at the address:
+#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki123-apb.yaml'
+#
+#       provision: ansibleplaybookbundle/mediawiki123-apb
+#
+#  - To reference a local template in './templates/postgresql.yaml', use this
+#    format.
+#
+#       provision: postgresql
+#
+#  - Specify the path of the BindApp. This will bind to the first provisioned
+#    app that is not the same as the BindApp.
+#  - This will look for the file './templates/postgresql-mediawiki123-apb-bind.yaml'
+#    and bind postgresql to mediawiki.
+#
+#        provision: ansibleplaybookbundle/mediawiki123-apb
+#        bind: postgresql
+#
+#  - Verify any action has succeeded.
+#  - The verify field is run as a shell command
+#
+#        verify: kubectl get pods | grep Running | grep mediawiki123
+#        verify: verify-app-health.sh
+#
+#  - The BindApp is the application that is binded to the BindTarget.
+#  - Format:
+#      <BindApp> | <BindTarget>
+#  - Unbind postgresql from mediawiki.
+#
+#        unbind: postgresql | mediawiki123-apb
+#
+######
