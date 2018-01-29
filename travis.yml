@@ -21,9 +21,11 @@ jobs:
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/gather-logs.sh | bash -s
     - # Kubernetes
       before_script:
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/travis.sh | bash -s install
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-minikube.sh | bash -s
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/setup-catalog.sh | bash -s
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/pv-setup.sh | bash -s
+        - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/broker-ci/wait-for-resource.sh | NAMESPACE=catalog bash -s create pod controller-manager
         - curl -s https://raw.githubusercontent.com/openshift/ansible-service-broker/master/scripts/run_latest_k8s_build.sh | bash -s
         - go get github.com/rthallisey/service-broker-ci/cmd/ci
       script:
