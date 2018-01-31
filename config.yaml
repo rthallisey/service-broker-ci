@@ -21,9 +21,9 @@ deprovision: ansibleplaybookbundle/postgresql-apb
 # How to use the API calls:
 #
 #  - A Template with the name 'mediawiki123-apb' is expected at the address:
-#    'https://github.com/rthallisey/service-broker-ci/blob/master/templates/mediawiki123-apb.yaml'
+#    'https://github.com/ansibleplaybookbundle/mediawiki-apb/blob/master/templates/mediawiki-apb.yaml'
 #
-#       provision: ansibleplaybookbundle/mediawiki123-apb
+#       provision: ansibleplaybookbundle/mediawiki-apb
 #
 #  - To reference a local template in './templates/postgresql.yaml', use this
 #    format.
@@ -32,10 +32,10 @@ deprovision: ansibleplaybookbundle/postgresql-apb
 #
 #  - Specify the path of the BindApp. This will bind to the first provisioned
 #    app that is not the same as the BindApp.
-#  - This will look for the file './templates/postgresql-mediawiki123-apb-bind.yaml'
+#  - This will look for the file './templates/postgresql-mediawiki-apb-bind.yaml'
 #    and bind postgresql to mediawiki.
 #
-#        provision: ansibleplaybookbundle/mediawiki123-apb
+#        provision: ansibleplaybookbundle/mediawiki-apb
 #        bind: postgresql
 #
 #  - Verify any action has succeeded.
