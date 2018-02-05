@@ -20,7 +20,7 @@ deprovision: ansibleplaybookbundle/postgresql-apb
 ######
 # How to use the API calls:
 #
-#  - A Template with the name 'mediawiki123-apb' is expected at the address:
+#  - A Template with the name 'mediawiki-apb' is expected at the address:
 #    'https://github.com/ansibleplaybookbundle/mediawiki-apb/blob/master/templates/mediawiki-apb.yaml'
 #
 #       provision: ansibleplaybookbundle/mediawiki-apb
@@ -41,7 +41,7 @@ deprovision: ansibleplaybookbundle/postgresql-apb
 #  - Verify any action has succeeded.
 #  - The verify field is run as a shell command
 #
-#        verify: kubectl get pods | grep Running | grep mediawiki123
+#        verify: kubectl get pods | grep Running | grep mediawiki
 #        verify: verify-app-health.sh
 #
 #  - The BindApp is the application that is binded to the BindTarget.
@@ -49,6 +49,6 @@ deprovision: ansibleplaybookbundle/postgresql-apb
 #      <BindApp> | <BindTarget>
 #  - Unbind postgresql from mediawiki.
 #
-#        unbind: postgresql | mediawiki123-apb
+#        unbind: postgresql | mediawiki-apb
 #
 ######
