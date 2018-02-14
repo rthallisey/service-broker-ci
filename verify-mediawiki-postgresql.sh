@@ -19,7 +19,7 @@ for r in $(seq $RETRIES); do
 	echo "You can double check by opening http://${ENDPOINT} in your browser"
 	break
     fi
-    sleep 2
+    sleep 10
 done
 
 if [ "${r}" == "${RETRIES}" ]; then
