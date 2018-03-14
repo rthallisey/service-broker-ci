@@ -6,7 +6,7 @@ for r in $(seq $RETRIES); do
     if [[ "${KUBERNETES}" ]]; then
 	ENDPOINT=$(kubectl get endpoints | grep mediawiki | awk '{ print $2 }')/index.php/Main_Page
     else
-	ENDPOINT=$(oc get route | grep mediawiki | cut -f 4 -d ' ')/index.php/Main_Page
+	ENDPOINT=$(oc get route -n default mediawiki123 --no-headers -o custom-columns='host:.spec.host')/index.php/Main_Page
     fi
 
     echo "Running: curl ${ENDPOINT}| grep \"div class\" | cut -f 2 -d \"'\""
