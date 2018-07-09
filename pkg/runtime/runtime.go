@@ -24,7 +24,7 @@ func GetRuntime(runtime string) {
 // InjectBindData - inject bind data using openshift
 func (o openshift) InjectBindData(instanceName []byte, dataString string) ([]byte, error) {
 	fmt.Printf("Looking for a Deployment Config with the SAME name used in your ServiceInstance: %s\n", instanceName)
-	output, err := RunCommand("oc", fmt.Sprintf("env dc %s %s", instanceName, dataString))
+	output, err := RunCommand("oc", fmt.Sprintf("set env dc %s %s", instanceName, dataString))
 	return output, err
 }
 
